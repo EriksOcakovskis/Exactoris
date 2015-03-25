@@ -69,7 +69,8 @@ ROOT_URLCONF = '%s.urls' % SITE_NAME
 WSGI_APPLICATION = '%s.wsgi.application' % SITE_NAME
 
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-    "lib.site_globals.site_title",
+    'lib.site_globals.site_title',
+    'lib.site_globals.admin_site_header',
 )
 
 # Database
