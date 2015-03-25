@@ -30,6 +30,7 @@ class Customer(models.Model):
 
 class Station(models.Model):
   name = models.CharField(max_length=50)
+  number = models.CharField(max_length=4)
   official_name = models.CharField(max_length=80)
   address = models.CharField(max_length=80)
   customer = models.ForeignKey(Customer)
@@ -42,7 +43,7 @@ class Station(models.Model):
 
 class Terminal(models.Model):
   number = models.CharField(max_length=2)
-  crip = models.CharField(max_length=3)
+  crip = models.BooleanField('Is this a CRIP?')
   station = models.ForeignKey(Station)
   created_date = models.DateTimeField(auto_now_add=True, blank=False)
   mod_date = models.DateTimeField(auto_now=True, blank=False)
