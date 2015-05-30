@@ -39,7 +39,18 @@ class TerminalAdmin(admin.ModelAdmin):
   list_filter = ['crip', 'number']
   search_fields = ['station__name', 'station__number']
 
-admin.site.register(WorkOrder)
+class WorkorderAdmin(admin.ModelAdmin):
+  list_display = ('customer', 'station', 'terminal', 'device',
+                  'pub_date', 'finish_date', 'work_assigned_to',
+                  'last_edited_by', 'mod_date')
+  exclude = ('last_edited_by',)
+  def save_model(self, request, obj, form, change):
+      obj.last_edited_by = request.user.username
+      obj.save()
+  list_filter = ['customer', 'device']
+  search_fields = ['customer', 'station']
+
+admin.site.register(WorkOrder, WorkorderAdmin)
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Station, StationAdmin)
 admin.site.register(Terminal, TerminalAdmin)

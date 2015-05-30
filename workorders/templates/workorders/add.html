@@ -1,0 +1,25 @@
+{% extends "__base.html" %}
+
+{% block title %}{{ title }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+
+  <form action="{% url 'workorders:add' %}" method="post" autocomplete="off">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Add a workorder number</legend>
+
+      {% for e in form %}
+        <div>
+          {{ e.label_tag }}
+          <div>
+            {{ e }}
+          </div>
+        </div>
+      {% endfor %}
+
+    <input type="reset" value="Reset" />
+    <input type="submit" value="Save" />
+  </form>
+
+{% endblock %} {# content #}

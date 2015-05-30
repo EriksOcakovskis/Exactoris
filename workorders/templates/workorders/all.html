@@ -1,0 +1,19 @@
+{% extends "__base.html" %}
+
+{% block title %}{{ title }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+  {% if all_workorder_list %}
+    <ul>
+      {% for workorder in all_workorder_list %}
+        <li>
+          <a href="{% url 'workorders:detail' workorder.id %}">
+          {{ workorder.id }} || {{ workorder.station }} ||
+          {{ workorder.customer }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No workorders are available.</p>
+  {% endif %}
+{% endblock %} {# content #}

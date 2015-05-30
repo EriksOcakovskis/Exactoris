@@ -1,21 +1,6 @@
 from django.db import models
-
-class WorkOrder(models.Model):
-  customer = models.CharField(max_length=50)
-  station = models.CharField(max_length=50)
-  station_number = models.CharField(max_length=4)
-  terminal = models.CharField(max_length=2)
-  device = models.CharField(max_length=100)
-  description = models.TextField(blank=False)
-  pub_date = models.DateTimeField(auto_now_add=True, blank=False)
-  mod_date = models.DateTimeField(auto_now=True, blank=False)
-  time_elapsed = models.CharField(max_length=20)
-  finish_date = models.DateTimeField('Job complete date')
-  work_assigned_to = models.CharField(max_length=50, blank=False, null=True)
-  last_edited_by = models.CharField(max_length=50, blank=False, null=True)
-
-  def __str__(self):
-    return self.station_number
+from django.utils import timezone
+from smart_selects.db_fields import ChainedForeignKey
 
 class Customer(models.Model):
   name = models.CharField(max_length=50)
@@ -39,11 +24,11 @@ class Station(models.Model):
   last_edited_by = models.CharField(max_length=50, blank=False, null=True)
 
   def __str__(self):
-    return self.name
+    return '%s - %s' % (self.name, self.number)
 
 class Terminal(models.Model):
   number = models.CharField(max_length=2)
-  crip = models.BooleanField('Is this a CRIP?')
+  crip = models.BooleanField('Is this a CRIP?', default=False)
   station = models.ForeignKey(Station)
   created_date = models.DateTimeField(auto_now_add=True, blank=False)
   mod_date = models.DateTimeField(auto_now=True, blank=False)
@@ -51,3 +36,36 @@ class Terminal(models.Model):
 
   def __str__(self):
     return self.number
+
+class WorkOrder(models.Model):
+  customer = models.ForeignKey(Customer)
+  station = ChainedForeignKey(
+    Station,
+    chained_field="customer",
+    chained_model_field="customer",
+    show_all=False,
+    auto_choose=True
+  )
+  terminal = ChainedForeignKey(
+    Terminal,
+    chained_field="station",
+    chained_model_field="station",
+    show_all=False,
+    auto_choose=True
+  )
+  device = models.CharField(max_length=100)
+  description = models.TextField(blank=False)
+  pub_date = models.DateTimeField(auto_now_add=True, blank=False)
+  mod_date = models.DateTimeField(auto_now=True, blank=False)
+  finish_date = models.DateTimeField('Job complete date', blank=True, null=True)
+  work_assigned_to = models.CharField(max_length=50, blank=False, null=True)
+  last_edited_by = models.CharField(max_length=50, blank=False, null=True)
+
+  def elapsed_time_delta(self):
+    current_datetime = timezone.now()
+    saved_datetime = self.pub_date
+    result = current_datetime - saved_datetime
+    return result
+
+  def __str__(self):
+    return str(self.id)

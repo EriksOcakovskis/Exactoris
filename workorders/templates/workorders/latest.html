@@ -1,0 +1,20 @@
+{% extends "__base.html" %}
+
+{% block title %}{{ title }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+  {% if workorder_elapsed_list %}
+    <ul>
+      {% for workorder_elapsed in workorder_elapsed_list %}
+        <li>
+          <a href="{% url 'workorders:detail' workorder_elapsed.0.id %}">
+          {{ workorder_elapsed.0.id }} || {{ workorder_elapsed.0.station }} ||
+          {{ workorder_elapsed.0.customer }} ||
+          Time since creation -  {{ workorder_elapsed.1 }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No workorders are available.</p>
+  {% endif %}
+{% endblock %} {# content #}

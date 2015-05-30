@@ -1,0 +1,48 @@
+{% extends "__base.html" %}
+
+{% block title %}{{ title }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+  {# <h1>Workorder number: {{ workorder.id }}</h1> #}
+
+  <div>
+    {% if  previous_wo.0 %}
+      <a href="{% url 'workorders:detail' previous_wo.0 %}"> &lt;&lt; {{ previous_wo.0 }}</a>
+    {% else %}
+      Start
+    {% endif %}
+
+    {% if next_wo.0 %}
+      <a href="{% url 'workorders:detail' next_wo.0 %}">{{ next_wo.0 }} &gt;&gt; </a>
+    {% else %}
+      End
+    {% endif %}
+  </div>
+
+  <h1> Station: {{ workorder.station }}</h1>
+
+  <div>
+    <form action="{% url 'workorders:edit' workorder.id %}" method="post" autocomplete="off">
+      {% csrf_token %}
+      <fieldset>
+        <legend>Workorder number {{ workorder.id }}</legend>
+
+        <div>Workorder creation date: <time>{{ workorder.pub_date }}</time></div>
+        <div>Edited: <time>{{ workorder.mod_date }}</time></div>
+        <div>Elapsed: <time>{{ elapsed }}</time></div>
+
+        {% for e in form %}
+          <div>
+            {{ e.label_tag }}
+            <div>
+              {{ e }}
+            </div>
+          </div>
+        {% endfor %}
+
+      <input type="reset" value="Reset" />
+      <input type="submit" value="Save" />
+      <input type="reset" value="Cancel" />
+    </form>
+  </div>
+{% endblock %} {# content #}

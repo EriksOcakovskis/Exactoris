@@ -52,6 +52,7 @@ INSTALLED_APPS = (
   'django.contrib.messages',
   'django.contrib.staticfiles',
   'workorders',
+  'smart_selects',
 )
 
 MIDDLEWARE_CLASSES = (
