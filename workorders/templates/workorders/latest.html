@@ -4,16 +4,26 @@
 
 {% block content %}
   {% if workorder_elapsed_list %}
-    <ul>
-      {% for workorder_elapsed in workorder_elapsed_list %}
-        <li>
-          <a href="{% url 'workorders:detail' workorder_elapsed.0.id %}">
-          {{ workorder_elapsed.0.id }} || {{ workorder_elapsed.0.station }} ||
-          {{ workorder_elapsed.0.customer }} ||
-          Time since creation -  {{ workorder_elapsed.1 }}</a>
-        </li>
-      {% endfor %}
-    </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Station name</th>
+              <th>Customer</th>
+              <th>Time since creation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for workorder_elapsed in workorder_elapsed_list %}
+              <tr>
+                <th><a href="{% url 'workorders:detail' workorder_elapsed.0.id %}">{{ workorder_elapsed.0.id }}</th>
+                <td>{{ workorder_elapsed.0.station }}</td>
+                <td>{{ workorder_elapsed.0.customer }}</td>
+                <td>{{ workorder_elapsed.1 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
   {% else %}
     <p>No workorders are available.</p>
   {% endif %}
