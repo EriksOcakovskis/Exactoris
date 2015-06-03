@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -16,7 +17,7 @@ def user_login(request):
     if user:
       if user.is_active:
         login(request, user)
-        return HttpResponseRedirect(reverse('workorders:latest'))
+        return HttpResponseRedirect(reverse('workorders:open'))
       else:
         return HttpResponse("Your Rango account is disabled.")
     else:
@@ -35,23 +36,23 @@ def user_logout(request):
   return HttpResponseRedirect(reverse('workorders:login'))
 
 @login_required
-def latest(request):
-  latest_workorder_list = models.WorkOrder.objects.order_by('-pub_date')[:5]
+def open(request):
+  open_workorder_list = models.WorkOrder.objects.filter(finished__exact=False).order_by('pub_date')
 
   elapsed_list = []
-  for wo in latest_workorder_list:
+  for wo in open_workorder_list:
     elapsed_list.append(wo.elapsed_time_delta())
 
-  workorder_elapsed_list = []
+  open_workorder_and_elapsed_list = []
   c = 0
-  for wo in latest_workorder_list:
-    workorder_elapsed_list.append([wo,elapsed_list[c]])
+  for wo in open_workorder_list:
+    open_workorder_and_elapsed_list.append([wo,elapsed_list[c]])
     c = c + 1
 
-  context = {'title': 'Latest',
-             'workorder_elapsed_list': workorder_elapsed_list}
+  context = {'title': 'open',
+             'list': open_workorder_and_elapsed_list}
 
-  return render(request, 'workorders/latest.html', context)
+  return render(request, 'workorders/open.html', context)
 
 @login_required
 def all(request):
@@ -74,17 +75,25 @@ def all(request):
 
   return render(request, 'workorders/all.html', context)
 
+def autodate_on_finished(form_data):
+  updated_form = form_data.save(commit=False)
+  updated_form.finish_date = timezone.now()
+  updated_form.save()
+
 @login_required
 def add(request):
   if request.method == 'POST':
-    add_form = forms.WorkOrderForm(request.POST)
+    add_form = forms.NewWorkOrderForm(request.POST)
     if add_form.is_valid():
-      add_form.save()
-      return HttpResponseRedirect(reverse('workorders:latest'))
+      if add_form.cleaned_data['finished'] == True and not add_form.cleaned_data['finish_date']:
+        autodate_on_finished(add_form)
+      else:
+        add_form.save()
+      return HttpResponseRedirect(reverse('workorders:open'))
     else:
       print(add_form.errors)
   else:
-    add_form = forms.WorkOrderForm()
+    add_form = forms.NewWorkOrderForm()
 
   context = {'form': add_form,
              'title': 'Add'}
@@ -102,7 +111,10 @@ def detail(request, workorder_id):
   if request.method == 'POST':
     detail_form = forms.WorkOrderForm(request.POST, instance = workorder)
     if detail_form.is_valid():
-      detail_form.save()
+      if detail_form.cleaned_data['finished'] == True and not detail_form.cleaned_data['finish_date']:
+        autodate_on_finished(detail_form)
+      else:
+        detail_form.save()
       return HttpResponseRedirect(reverse('workorders:detail', args=(workorder.id,)))
     else:
       print(detail_form.errors)

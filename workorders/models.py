@@ -52,6 +52,9 @@ class Device(models.Model):
     return self.name
 
 class WorkOrder(models.Model):
+  def one_day_hence():
+    return timezone.now() + timezone.timedelta(days=1)
+
   customer = models.ForeignKey(Customer)
   station = ChainedForeignKey(
     Station,
@@ -74,6 +77,7 @@ class WorkOrder(models.Model):
   mod_date = models.DateTimeField(auto_now=True, blank=False)
   finished = models.BooleanField('Is the job finished?', default=False)
   finish_date = models.DateTimeField('Job complete date', blank=True, null=True)
+  workorder_expires = models.DateTimeField(default=one_day_hence)
   work_assigned_to = models.ForeignKey(UserProfile)
   last_edited_by = models.CharField(max_length=50, blank=False, null=True)
 

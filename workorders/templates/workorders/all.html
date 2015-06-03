@@ -27,7 +27,11 @@
           </thead>
           <tbody>
             {% for workorder in workorder_list %}
-              <tr>
+              {% if workorder.finished == True %}
+                <tr style="background-color: #98FB98;">
+              {% else %}
+                <tr>
+              {% endif %}
                 <th><a href="{% url 'workorders:detail' workorder.id %}">{{ workorder.id }}</th>
                 <td>{{ workorder.station }}</td>
                 <td>{{ workorder.customer }}</td>

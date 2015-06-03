@@ -23,5 +23,7 @@ class WorkOrderForm(forms.ModelForm):
               'work_assigned_to',
               'issue_description',
               'solution_description')
-    exclude = ('finish_date',)
     widgets = {'description': forms.Textarea(attrs={'cols': 40, 'rows': 4}),}
+
+class NewWorkOrderForm(WorkOrderForm):
+  finish_date = forms.DateTimeField(widget=forms.HiddenInput(), required=False, label='')

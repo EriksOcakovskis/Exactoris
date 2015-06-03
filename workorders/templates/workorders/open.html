@@ -3,7 +3,7 @@
 {% block title %}{{ title }} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  {% if workorder_elapsed_list %}
+  {% if list %}
         <table>
           <thead>
             <tr>
@@ -14,12 +14,16 @@
             </tr>
           </thead>
           <tbody>
-            {% for workorder_elapsed in workorder_elapsed_list %}
-              <tr>
-                <th><a href="{% url 'workorders:detail' workorder_elapsed.0.id %}">{{ workorder_elapsed.0.id }}</th>
-                <td>{{ workorder_elapsed.0.station }}</td>
-                <td>{{ workorder_elapsed.0.customer }}</td>
-                <td>{{ workorder_elapsed.1 }}</td>
+            {% for e in list %}
+              {% if e.0.pub_date > e.0.workorder_expires %}
+                <tr style="background-color: #FF7256;">
+              {% else %}
+                <tr>
+              {% endif %}
+                <th><a href="{% url 'workorders:detail' e.0.id %}">{{ e.0.id }}</th>
+                <td>{{ e.0.station }}</td>
+                <td>{{ e.0.customer }}</td>
+                <td>{{ e.1 }}</td>
               </tr>
             {% endfor %}
           </tbody>
