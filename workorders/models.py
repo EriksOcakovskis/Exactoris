@@ -37,6 +37,13 @@ class Terminal(models.Model):
   def __str__(self):
     return self.number
 
+class Device(models.Model):
+  name = models.CharField(max_length=50)
+  created_date = models.DateTimeField(auto_now_add=True, blank=False)
+
+  def __str__(self):
+    return self.name
+
 class WorkOrder(models.Model):
   customer = models.ForeignKey(Customer)
   station = ChainedForeignKey(
@@ -53,10 +60,12 @@ class WorkOrder(models.Model):
     show_all=False,
     auto_choose=True
   )
-  device = models.CharField(max_length=100)
-  description = models.TextField(blank=False)
+  device = models.ForeignKey(Device)
+  issue_description = models.TextField(blank=False)
+  solution_description = models.TextField(blank=True)
   pub_date = models.DateTimeField(auto_now_add=True, blank=False)
   mod_date = models.DateTimeField(auto_now=True, blank=False)
+  finished = models.BooleanField('Is the job finished?', default=False)
   finish_date = models.DateTimeField('Job complete date', blank=True, null=True)
   work_assigned_to = models.CharField(max_length=50, blank=False, null=True)
   last_edited_by = models.CharField(max_length=50, blank=False, null=True)

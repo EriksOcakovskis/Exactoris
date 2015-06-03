@@ -1,5 +1,5 @@
 from django.contrib import admin
-from workorders.models import WorkOrder, Customer, Station, Terminal
+from workorders.models import WorkOrder, Customer, Station, Terminal, Device
 
 class TerminalInline(admin.TabularInline):
   model = Terminal
@@ -39,6 +39,10 @@ class TerminalAdmin(admin.ModelAdmin):
   list_filter = ['crip', 'number']
   search_fields = ['station__name', 'station__number']
 
+class DeviceAdmin(admin.ModelAdmin):
+  list_display = ('name', 'created_date')
+  search_fields = ['name']
+
 class WorkorderAdmin(admin.ModelAdmin):
   list_display = ('customer', 'station', 'terminal', 'device',
                   'pub_date', 'finish_date', 'work_assigned_to',
@@ -48,9 +52,10 @@ class WorkorderAdmin(admin.ModelAdmin):
       obj.last_edited_by = request.user.username
       obj.save()
   list_filter = ['customer', 'device']
-  search_fields = ['customer__name', 'station__name']
+  search_fields = ['customer__name', 'station__name', 'device__name']
 
 admin.site.register(WorkOrder, WorkorderAdmin)
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Station, StationAdmin)
 admin.site.register(Terminal, TerminalAdmin)
+admin.site.register(Device, DeviceAdmin)

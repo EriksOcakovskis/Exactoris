@@ -85,18 +85,3 @@ def detail(request, workorder_id):
              'title': 'Detail'}
   return render(request, 'workorders/detail.html', context)
 
-# def save(request, workorder_id):
-#   workorder = get_object_or_404(models.WorkOrder, pk=workorder_id)
-#   if request.method == 'POST':
-#     form = WorkOrderForm(request.POST)
-
-#     if form.is_valid():
-#       form.save(commit=True)
-#     else:
-#       print(form.errors)
-
-#   else:
-#     form = WorkOrderForm()
-
-#   context = {'form':form}
-#   return render(request, 'workorders/detail.html', context)

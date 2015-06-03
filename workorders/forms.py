@@ -28,8 +28,10 @@ class WorkOrderForm(forms.ModelForm):
               'station',
               'terminal',
               'device',
+              'finished',
               'finish_date',
               'work_assigned_to',
-              'description')
+              'issue_description',
+              'solution_description')
     exclude = ('finish_date',)
     widgets = {'description': forms.Textarea(attrs={'cols': 40, 'rows': 4}),}
