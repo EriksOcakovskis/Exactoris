@@ -3,7 +3,19 @@
 {% block title %}{{ title }} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  {% if all_workorder_list %}
+
+  <div>
+    <form method="GET" action="">
+      <div>
+        <label for="searchbar">Search:</label>
+        <input id="searchbar" type="text" value="" name="q" size="20">
+        <input type="submit" value="Search">
+      </div>
+    </form>
+    <a href="{% url 'workorders:all' %}">Reset Search</a>
+  </div>
+
+  {% if workorder_list %}
         <table>
           <thead>
             <tr>
@@ -14,7 +26,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for workorder in all_workorder_list %}
+            {% for workorder in workorder_list %}
               <tr>
                 <th><a href="{% url 'workorders:detail' workorder.id %}">{{ workorder.id }}</th>
                 <td>{{ workorder.station }}</td>

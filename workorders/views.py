@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from workorders import models
 from workorders import forms
 from django.forms.models import model_to_dict
+from lib.site_globals import get_query
 
 def latest(request):
   latest_workorder_list = models.WorkOrder.objects.order_by('-pub_date')[:5]
@@ -25,9 +26,21 @@ def latest(request):
 
 def all(request):
   all_workorder_list = models.WorkOrder.objects.order_by('-pub_date')
+  query_string = ''
+  found_entries = None
 
-  context = {'title': 'All',
-             'all_workorder_list': all_workorder_list}
+  if ('q' in request.GET) and request.GET['q'].strip():
+    query_string = request.GET['q']
+
+    entry_query = get_query(query_string, ['station__name', 'customer__name',])
+
+    found_entries = all_workorder_list.filter(entry_query)
+
+    context = {'title': 'All',
+               'workorder_list': found_entries}
+  else:
+    context = {'title': 'All',
+               'workorder_list': all_workorder_list}
 
   return render(request, 'workorders/all.html', context)
 

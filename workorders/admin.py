@@ -48,7 +48,7 @@ class WorkorderAdmin(admin.ModelAdmin):
       obj.last_edited_by = request.user.username
       obj.save()
   list_filter = ['customer', 'device']
-  search_fields = ['customer', 'station']
+  search_fields = ['customer__name', 'station__name']
 
 admin.site.register(WorkOrder, WorkorderAdmin)
 admin.site.register(Customer, CustomerAdmin)
