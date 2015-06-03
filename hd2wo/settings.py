@@ -97,6 +97,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Default login pattern
+LOGIN_URL = 'workorders:login'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

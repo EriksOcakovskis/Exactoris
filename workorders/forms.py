@@ -1,25 +1,15 @@
 from django import forms
+from django.contrib.auth.models import User
 from workorders import models
 from smart_selects.form_fields import ChainedModelChoiceField
 
-# class WorkorderDetailForm(forms.Form):
-#   customer = forms.ModelChoiceField(queryset = '', initial='', required=True)
-#   station = ChainedModelChoiceField(app_name = 'workorders',
-#                                     model_name = 'Station',
-#                                     chain_field = 'customer',
-#                                     model_field = 'customer',
-#                                     show_all = False,
-#                                     auto_choose = True,
-#                                     queryset = '',
-#                                     required=True)
-#   terminal = ChainedModelChoiceField(app_name = 'workorders',
-#                                      model_name = 'Terminal',
-#                                      chain_field = 'station',
-#                                      model_field = 'station',
-#                                      show_all = False,
-#                                      auto_choose = True,
-#                                      queryset = '',
-#                                      required=True)
+class UserLoginForm(forms.ModelForm):
+  password = forms.CharField(widget=forms.PasswordInput())
+
+  class Meta:
+    model = User
+    fields = ('username',
+              'password')
 
 class WorkOrderForm(forms.ModelForm):
   class Meta:

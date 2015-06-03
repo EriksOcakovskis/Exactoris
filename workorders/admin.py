@@ -1,13 +1,13 @@
 from django.contrib import admin
-from workorders.models import WorkOrder, Customer, Station, Terminal, Device
+from workorders import models
 
 class TerminalInline(admin.TabularInline):
-  model = Terminal
+  model = models.Terminal
   extra = 3
   exclude = ('last_edited_by',)
 
 class StationsInline(admin.TabularInline):
-  model = Station
+  model = models.Station
   extra = 3
   exclude = ('last_edited_by',)
 
@@ -54,8 +54,9 @@ class WorkorderAdmin(admin.ModelAdmin):
   list_filter = ['customer', 'device']
   search_fields = ['customer__name', 'station__name', 'device__name']
 
-admin.site.register(WorkOrder, WorkorderAdmin)
-admin.site.register(Customer, CustomerAdmin)
-admin.site.register(Station, StationAdmin)
-admin.site.register(Terminal, TerminalAdmin)
-admin.site.register(Device, DeviceAdmin)
+admin.site.register(models.WorkOrder, WorkorderAdmin)
+admin.site.register(models.Customer, CustomerAdmin)
+admin.site.register(models.Station, StationAdmin)
+admin.site.register(models.Terminal, TerminalAdmin)
+admin.site.register(models.Device, DeviceAdmin)
+admin.site.register(models.UserProfile)

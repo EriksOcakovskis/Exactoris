@@ -25,16 +25,22 @@
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     <div class="page">
-      {# <header> #}
+      {% if user.is_authenticated %}
+        {# <header> #}
         {% include "_logo.html" %}
-      {# </header> #}
-      {% include "_navigation.html" %}
-      <div id="main" role="main">
-        <div class="container">
-          {% block content %}
-          {% endblock %}
+        {% include "_user.html" %}
+        {# </header> #}
+        {% include "_navigation.html" %}
+        <div id="main" role="main">
+          <div class="container">
+            {% block content %}
+            {% endblock %}
+          </div>
         </div>
-      </div>
+      {% else %}
+        {% block login %}
+        {% endblock %}
+      {% endif %}
     </div>
   </body>
 </html>

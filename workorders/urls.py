@@ -4,6 +4,10 @@ from workorders import views
 urlpatterns = patterns('',
   # ex: /workorders/
   url(r'^$', views.latest, name='latest'),
+  # ex: /workorders/login/
+  url(r'^login/$', views.user_login, name='login'),
+  # ex: /workorders/logout/
+  url(r'^logout/$', views.user_logout, name='logout'),
   # ex: /workorders/latest/
   url(r'^latest/', views.latest, name='latest'),
   # ex: /workorders/all/

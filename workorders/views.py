@@ -1,11 +1,40 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from workorders import models
 from workorders import forms
-from django.forms.models import model_to_dict
 from lib.site_globals import get_query
 
+def user_login(request):
+  if request.method == 'POST':
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    user = authenticate(username=username, password=password)
+
+    if user:
+      if user.is_active:
+        login(request, user)
+        return HttpResponseRedirect(reverse('workorders:latest'))
+      else:
+        return HttpResponse("Your Rango account is disabled.")
+    else:
+      return HttpResponse("Invalid login details supplied.")
+  else:
+    user_login_form = forms.UserLoginForm()
+
+    context = {'title': 'Login',
+               'form':user_login_form}
+
+    return render(request, 'workorders/login.html', context)
+
+@login_required
+def user_logout(request):
+  logout(request)
+  return HttpResponseRedirect(reverse('workorders:login'))
+
+@login_required
 def latest(request):
   latest_workorder_list = models.WorkOrder.objects.order_by('-pub_date')[:5]
 
@@ -24,6 +53,7 @@ def latest(request):
 
   return render(request, 'workorders/latest.html', context)
 
+@login_required
 def all(request):
   all_workorder_list = models.WorkOrder.objects.order_by('-pub_date')
   query_string = ''
@@ -44,6 +74,7 @@ def all(request):
 
   return render(request, 'workorders/all.html', context)
 
+@login_required
 def add(request):
   if request.method == 'POST':
     add_form = forms.WorkOrderForm(request.POST)
@@ -60,6 +91,7 @@ def add(request):
 
   return render(request, 'workorders/add.html', context)
 
+@login_required
 def detail(request, workorder_id):
   workorder = get_object_or_404(models.WorkOrder, pk=workorder_id)
   elapsed = workorder.elapsed_time_delta()

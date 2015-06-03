@@ -1,6 +1,13 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 from smart_selects.db_fields import ChainedForeignKey
+
+class UserProfile(models.Model):
+  user = models.OneToOneField(User)
+
+  def __str__(self):
+        return self.user.username
 
 class Customer(models.Model):
   name = models.CharField(max_length=50)
@@ -67,7 +74,7 @@ class WorkOrder(models.Model):
   mod_date = models.DateTimeField(auto_now=True, blank=False)
   finished = models.BooleanField('Is the job finished?', default=False)
   finish_date = models.DateTimeField('Job complete date', blank=True, null=True)
-  work_assigned_to = models.CharField(max_length=50, blank=False, null=True)
+  work_assigned_to = models.ForeignKey(UserProfile)
   last_edited_by = models.CharField(max_length=50, blank=False, null=True)
 
   def elapsed_time_delta(self):
