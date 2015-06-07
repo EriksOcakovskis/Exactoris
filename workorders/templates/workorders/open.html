@@ -15,7 +15,7 @@
           </thead>
           <tbody>
             {% for e in list %}
-              {% if e.0.pub_date > e.0.workorder_expires %}
+              {% if e.0.workorder_expires < time_now %}
                 <tr style="background-color: #FF7256;">
               {% else %}
                 <tr>

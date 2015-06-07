@@ -50,6 +50,7 @@ def open(request):
     c = c + 1
 
   context = {'title': 'open',
+             'time_now': timezone.now(),
              'list': open_workorder_and_elapsed_list}
 
   return render(request, 'workorders/open.html', context)
