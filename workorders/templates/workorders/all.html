@@ -3,43 +3,54 @@
 {% block title %}{{ title }} | {{ block.super }}{% endblock %}
 
 {% block content %}
-
-  <div>
-    <form method="GET" action="">
-      <div>
-        <label for="searchbar">Search:</label>
-        <input id="searchbar" type="text" value="" name="q" size="20">
-        <input type="submit" value="Search">
-      </div>
-    </form>
-    <a href="{% url 'workorders:all' %}">Reset Search</a>
+  <div class="page-header">
+    <h1>All WorkOrders</h1>
   </div>
 
   {% if workorder_list %}
-        <table>
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-sm-6 custom_margin">
+        <a type="button" class="btn btn-primary" href="?q={{ user.username }}">Show assigned to me</a>
+        <a type="button" class="btn btn-default" href="{% url 'workorders:all' %}">Show all</a>
+      </div>
+      <form class="col-lg-3 col-md-4 col-sm-6 custom_margin" method="GET" action="">
+        <div class="input-group">
+          <input class="form-control" id="searchbar" type="text" value="" name="q" placeholder="Station / Customer / User">
+          <span class="input-group-btn">
+            <button class="btn btn-success" type="submit">Search</button>
+          </span>
+          {# <a type="button" class="btn btn-default" href="{% url 'workorders:all' %}">Reset Search</a> #}
+        </div>
+      </form>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-8">
+        <table class="table">
           <thead>
             <tr>
               <th>ID</th>
               <th>Station name</th>
               <th>Customer</th>
-              <th>Creation date</th>
+              <th>Work start date</th>
             </tr>
           </thead>
           <tbody>
             {% for workorder in workorder_list %}
               {% if workorder.finished == True %}
-                <tr style="background-color: #98FB98;">
+                <tr class="done">
               {% else %}
-                <tr>
+                <tr class="rowhighlight">
               {% endif %}
-                <th><a href="{% url 'workorders:detail' workorder.id %}">{{ workorder.id }}</th>
+                <th><a href="{% url 'workorders:detail' workorder.id %}" class="rowlink">{{ workorder.id }}</th>
                 <td>{{ workorder.station }}</td>
                 <td>{{ workorder.customer }}</td>
-                <td>{{ workorder.pub_date }}</td>
+                <td>{{ workorder.start_date|date:"Y-m-d H:i:s" }}</td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
+      </div>
+    </div>
   {% else %}
     <p>No workorders are available.</p>
   {% endif %}

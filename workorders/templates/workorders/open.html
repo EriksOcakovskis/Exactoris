@@ -3,31 +3,44 @@
 {% block title %}{{ title }} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  {% if list %}
-        <table>
+  <div class="page-header">
+    <h1>Open WorkOrders</h1>
+  </div>
+  {% if open_workorder_list %}
+    <div class="row">
+      <div class="col-md-4 custom_margin">
+      <a type="button" class="btn btn-primary" href="?q={{ user.username }}">Show assigned to me</a>
+      <a type="button" class="btn btn-default" href="{% url 'workorders:open' %}">Show all</a>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-8">
+        <table class="table">
           <thead>
             <tr>
               <th>ID</th>
               <th>Station name</th>
               <th>Customer</th>
-              <th>Time since creation</th>
+              <th>Fix time</th>
             </tr>
           </thead>
           <tbody>
-            {% for e in list %}
-              {% if e.0.workorder_expires < time_now %}
-                <tr style="background-color: #FF7256;">
+            {% for e in open_workorder_list %}
+              {% if e.workorder_expires < time_now %}
+                <tr class="overdue">
               {% else %}
-                <tr>
+                <tr class="rowhighlight">
               {% endif %}
-                <th><a href="{% url 'workorders:detail' e.0.id %}">{{ e.0.id }}</th>
-                <td>{{ e.0.station }}</td>
-                <td>{{ e.0.customer }}</td>
-                <td>{{ e.1 }}</td>
+                <th ><a  href="{% url 'workorders:detail' e.id %}" class="rowlink">{{ e.id }}</th>
+                <td>{{ e.station }}</td>
+                <td>{{ e.customer }}</td>
+                <td>{{ e.workorder_open_time }}</td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
+      </div>
+    </div>
   {% else %}
     <p>No workorders are available.</p>
   {% endif %}

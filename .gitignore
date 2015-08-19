@@ -43,6 +43,7 @@ coverage.xml
 *.swp
 *~
 .secret
+.db
 
 # OS generated files #
 ######################

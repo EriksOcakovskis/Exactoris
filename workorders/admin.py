@@ -45,8 +45,8 @@ class DeviceAdmin(admin.ModelAdmin):
 
 class WorkorderAdmin(admin.ModelAdmin):
   list_display = ('customer', 'station', 'terminal', 'device',
-                  'pub_date', 'finish_date', 'work_assigned_to',
-                  'last_edited_by', 'mod_date')
+                  'pub_date', 'author','start_date','finish_date',
+                  'work_assigned_to','last_edited_by', 'mod_date')
   exclude = ('last_edited_by',)
   def save_model(self, request, obj, form, change):
       obj.last_edited_by = request.user.username

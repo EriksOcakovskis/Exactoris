@@ -1,21 +1,39 @@
 {% extends "__base.html" %}
+{% load widget_tweaks %}
 
 {% block title %}{{ title }} | {{ block.super }}{% endblock %}
 
 {% block login %}
-  <form action="{% url 'workorders:login' %}" method="post" autocomplete="off">
+  <link rel="stylesheet" href="http://getbootstrap.com/examples/signin/signin.css" type="text/css" />
+  <form class="form-signin" role="form" action="{% url 'workorders:login' %}" method="post" autocomplete="off">
     {% csrf_token %}
     <fieldset>
-      <legend>Please login</legend>
-
-      {% for e in form %}
-        <div>
-          {{ e.label_tag }}
-          <div>
-            {{ e }}
+      <h1 class="form-signin-heading">Please sign in</h1>
+    {# Non Field Error row #}
+      {% if form.non_field_errors %}
+        <div class="row">
+          <div class="alert alert-danger" role="alert">
+            {{ form.non_field_errors|escape }}
           </div>
         </div>
+      {% endif %}
+      {% for e in form %}
+          {% if e.errors %}
+            {{ e.label_tag }}
+            {# border-radius is a bootstrap signin.css override #}
+            {% render_field e class="form-control has-warning" autofocus="autofocus" style+="border-radius: 4px;"%}
+            {% for error in e.errors %}
+              <span id="helpBlock" class="help-block">
+                {{ error|escape }}
+              </span>
+            {% endfor %}
+          {% else %}
+            {{ e.label_tag }}
+            {# border-radius is a bootstrap signin.css override #}
+            {% render_field e class="form-control" autofocus="autofocus" style+="border-radius: 4px;"%}
+          {% endif %}
       {% endfor %}
+    </fieldset>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" value="Submit">Sign in</button>
 
-    <input type="submit" value="Login" />
 {% endblock login %}

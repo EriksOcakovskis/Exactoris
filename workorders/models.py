@@ -2,12 +2,20 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from smart_selects.db_fields import ChainedForeignKey
+from lib.site_globals import strfdelta
+
+class WorkOrderManager(models.Manager):
+  def authored_by(self, author):
+    return self.filter(author__username=author)
+
+  def assigned_to(self, user):
+    return self.filter(work_assigned_to__user__username__icontains=user)
 
 class UserProfile(models.Model):
   user = models.OneToOneField(User)
 
   def __str__(self):
-        return self.user.username
+    return self.user.username
 
 class Customer(models.Model):
   name = models.CharField(max_length=50)
@@ -74,18 +82,27 @@ class WorkOrder(models.Model):
   issue_description = models.TextField(blank=False)
   solution_description = models.TextField(blank=True)
   pub_date = models.DateTimeField(auto_now_add=True, blank=False)
+  start_date = models.DateTimeField(blank=False)
+  author = models.ForeignKey(User)
   mod_date = models.DateTimeField(auto_now=True, blank=False)
   finished = models.BooleanField('Is the job finished?', default=False)
   finish_date = models.DateTimeField('Job complete date', blank=True, null=True)
+
+  def _get_workorder_open_time(self):
+    current_datetime = timezone.now()
+    saved_datetime = self.start_date
+    if self.finished == True:
+      delta = self.finish_date - saved_datetime
+    else:
+      delta = current_datetime - saved_datetime
+    result = strfdelta(delta, "{D}d {H:02}h {M:02}m {S:02}s")
+    return result
+
+  workorder_open_time = property(_get_workorder_open_time)
   workorder_expires = models.DateTimeField(default=one_day_hence)
   work_assigned_to = models.ForeignKey(UserProfile)
   last_edited_by = models.CharField(max_length=50, blank=False, null=True)
-
-  def elapsed_time_delta(self):
-    current_datetime = timezone.now()
-    saved_datetime = self.pub_date
-    result = current_datetime - saved_datetime
-    return result
+  objects = WorkOrderManager()
 
   def __str__(self):
     return str(self.id)
