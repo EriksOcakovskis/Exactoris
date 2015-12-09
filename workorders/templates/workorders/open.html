@@ -26,7 +26,7 @@
           </thead>
           <tbody>
             {% for e in open_workorder_list %}
-              {% if e.workorder_expires < time_now %}
+              {% if e.req_start_date < time_now %}
                 <tr class="overdue">
               {% else %}
                 <tr class="rowhighlight">

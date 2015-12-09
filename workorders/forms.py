@@ -34,16 +34,23 @@ class WorkOrderForm(forms.ModelForm):
               'station',
               'terminal',
               'device',
+              'call_date',
               'start_date',
               'finished',
               'finish_date',
               'work_assigned_to',
+              'err_symp_id',
               'issue_description',
-              'solution_description',)
+              'err_cause_id',
+              'perf_act_id',
+              'solution_description',
+              'rnd_used',
+              'field_eng_used',)
     widgets = {'issue_description': forms.Textarea(attrs={'cols': 50, 'rows': 4}),
                'solution_description': forms.Textarea(attrs={'cols': 50, 'rows': 4}),
                'finish_date': forms.DateInput(format='%Y-%m-%d %H:%M:%S'),
-               'start_date': forms.DateInput(format='%Y-%m-%d %H:%M:%S'),}
+               'start_date': forms.DateInput(format='%Y-%m-%d %H:%M:%S'),
+               'call_date': forms.DateInput(format='%Y-%m-%d %H:%M:%S'),}
 
   def clean(self):
     cleaned_data = super(WorkOrderForm, self).clean()

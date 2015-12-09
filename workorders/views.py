@@ -38,12 +38,12 @@ def user_logout(request):
 @login_required
 def open(request):
   open_workorder_list = models.WorkOrder.objects.filter(finished__exact=False) \
-    .order_by('pub_date')
+    .order_by('call_date')
 
   if ('q' in request.GET and request.GET['q'].strip()):
     assigned_entries = models.WorkOrder.objects \
       .assigned_to(request.user.username).filter(finished__exact=False) \
-      .order_by('pub_date')
+      .order_by('call_date')
 
     context = {'title': 'Open',
                'time_now': timezone.now(),
@@ -57,7 +57,7 @@ def open(request):
 
 @login_required
 def all(request):
-  all_workorder_list = models.WorkOrder.objects.order_by('-pub_date')
+  all_workorder_list = models.WorkOrder.objects.order_by('-call_date')
   query_string = ''
   found_entries = None
 
@@ -110,7 +110,7 @@ def add(request):
     else:
       print(add_form.errors)
   else:
-    add_form = forms.NewWorkOrderForm(initial={'start_date' : timezone.now()})
+    add_form = forms.NewWorkOrderForm(initial={'call_date' : timezone.now()})
 
   context = {'form': add_form,
              'title': 'Add'}

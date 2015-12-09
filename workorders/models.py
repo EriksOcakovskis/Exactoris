@@ -59,10 +59,31 @@ class Device(models.Model):
   def __str__(self):
     return self.name
 
-class WorkOrder(models.Model):
-  def one_day_hence():
-    return timezone.now() + timezone.timedelta(days=1)
+class ErrorSymptom(models.Model):
+  code = models.CharField(max_length=4)
+  description = models.CharField(max_length=80)
+  created_date = models.DateTimeField(auto_now_add=True, blank=False)
 
+  def __str__(self):
+    return '%s %s' % (self.code, self.description)
+
+class ErrorCause(models.Model):
+  code = models.CharField(max_length=4)
+  description = models.CharField(max_length=80)
+  created_date = models.DateTimeField(auto_now_add=True, blank=False)
+
+  def __str__(self):
+    return '%s %s' % (self.code, self.description)
+
+class PerformedActions(models.Model):
+  code = models.CharField(max_length=4)
+  description = models.CharField(max_length=80)
+  created_date = models.DateTimeField(auto_now_add=True, blank=False)
+
+  def __str__(self):
+    return '%s %s' % (self.code, self.description)
+
+class WorkOrder(models.Model):
   customer = models.ForeignKey(Customer)
   station = ChainedForeignKey(
     Station,
@@ -78,11 +99,29 @@ class WorkOrder(models.Model):
     show_all=False,
     auto_choose=True
   )
-  device = models.ForeignKey(Device)
+  device = models.ForeignKey(Device, blank=True, null=True)
+  # Symptom ID, what symptoms were reported, sales down, one product down, so on
+  err_symp_id = models.ForeignKey(ErrorSymptom, blank=True, null=True)
+  #
   issue_description = models.TextField(blank=False)
+  # Error cause ID, breakdown reason generic and specific codes
+  err_cause_id = models.ForeignKey(ErrorCause, blank=True, null=True)
+  # Preformed action ID, generic action codes
+  perf_act_id = models.ForeignKey(PerformedActions, blank=True, null=True)
+  #
   solution_description = models.TextField(blank=True)
+  # When work order was registered in database
   pub_date = models.DateTimeField(auto_now_add=True, blank=False)
-  start_date = models.DateTimeField(blank=False)
+  # When complaint from customer was received
+  call_date = models.DateTimeField('Complaint date', blank=False)
+
+  def _one_day_hence(self):
+    return self.call_date + timezone.timedelta(days=1)
+
+  # Latest date-time when work should be started on work order
+  req_start_date = property(_one_day_hence)
+  # When work on workorder was started
+  start_date = models.DateTimeField(blank=True, null=True)
   author = models.ForeignKey(User)
   mod_date = models.DateTimeField(auto_now=True, blank=False)
   finished = models.BooleanField('Is the job finished?', default=False)
@@ -90,7 +129,7 @@ class WorkOrder(models.Model):
 
   def _get_workorder_open_time(self):
     current_datetime = timezone.now()
-    saved_datetime = self.start_date
+    saved_datetime = self.call_date
     if self.finished == True:
       delta = self.finish_date - saved_datetime
     else:
@@ -99,9 +138,12 @@ class WorkOrder(models.Model):
     return result
 
   workorder_open_time = property(_get_workorder_open_time)
-  workorder_expires = models.DateTimeField(default=one_day_hence)
-  work_assigned_to = models.ForeignKey(UserProfile)
+  work_assigned_to = models.ForeignKey(UserProfile, blank=True, null=True)
   last_edited_by = models.CharField(max_length=50, blank=False, null=True)
+  # Was the work forwarded to RND?
+  rnd_used = models.BooleanField('Was RND used?', default=False)
+  # Was the work forwarded to field engineers?
+  field_eng_used = models.BooleanField('Redirected to field engineers?', default=False)
   objects = WorkOrderManager()
 
   def __str__(self):

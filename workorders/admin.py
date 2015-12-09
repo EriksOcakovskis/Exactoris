@@ -43,6 +43,18 @@ class DeviceAdmin(admin.ModelAdmin):
   list_display = ('name', 'created_date')
   search_fields = ['name']
 
+class ErrorSymptomAdmin(admin.ModelAdmin):
+  list_display = ('code', 'description' , 'created_date')
+  search_fields = ['code']
+
+class ErrorCauseAdmin(admin.ModelAdmin):
+  list_display = ('code', 'description' , 'created_date')
+  search_fields = ['code']
+
+class PerformedActionsAdmin(admin.ModelAdmin):
+  list_display = ('code', 'description' , 'created_date')
+  search_fields = ['code']
+
 class WorkorderAdmin(admin.ModelAdmin):
   list_display = ('customer', 'station', 'terminal', 'device',
                   'pub_date', 'author','start_date','finish_date',
@@ -60,3 +72,6 @@ admin.site.register(models.Station, StationAdmin)
 admin.site.register(models.Terminal, TerminalAdmin)
 admin.site.register(models.Device, DeviceAdmin)
 admin.site.register(models.UserProfile)
+admin.site.register(models.ErrorSymptom, ErrorSymptomAdmin)
+admin.site.register(models.ErrorCause, ErrorCauseAdmin)
+admin.site.register(models.PerformedActions, PerformedActionsAdmin)

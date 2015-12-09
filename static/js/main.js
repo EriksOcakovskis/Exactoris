@@ -28,6 +28,25 @@ function JobDoneAutoDate() {
   };
 };
 
+var userMenu = document.getElementById("id_work_assigned_to")
+var jobStartDate = document.getElementById("id_start_date")
+var isodateNow = new Date().toISOString();
+var dateNow = new Date();
+var my_year = dateNow.getFullYear();
+var my_month = ('0'+(dateNow.getMonth() + 1)).slice(-2);
+var my_day = ('0'+dateNow.getDate()).slice(-2);
+var my_hours = ('0'+dateNow.getHours()).slice(-2);
+var my_minutes = ('0'+dateNow.getMinutes()).slice(-2);
+var my_seconds = ('0'+dateNow.getSeconds()).slice(-2);
+var newDate = my_year+"-"+my_month+"-"+my_day+" "+my_hours+":"+my_minutes+":"+my_seconds;
+
+userMenu.onchange=function(){ //run some code when "onchange" event fires
+ var chosenoption=this.options[this.selectedIndex] //this refers to "selectmenu"
+ if (chosenoption.value!="nothing"){
+  jobStartDate.value = newDate.toString();
+ }
+}
+
 // Copyright 2014-2015 Twitter, Inc.
 // Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
 if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
