@@ -138,6 +138,8 @@ class WorkOrder(models.Model):
     return result
 
   workorder_open_time = property(_get_workorder_open_time)
+  def one_day_hence():
+    return timezone.now() + timezone.timedelta(days=1)
   work_assigned_to = models.ForeignKey(UserProfile, blank=True, null=True)
   last_edited_by = models.CharField(max_length=50, blank=False, null=True)
   # Was the work forwarded to RND?
