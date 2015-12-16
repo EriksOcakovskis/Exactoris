@@ -6,11 +6,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
+from django.core.validators import URLValidator
 from workorders import models
 from workorders import forms
 from lib.site_globals import get_query
 
 def user_login(request):
+  redirect_to = request.REQUEST.get('next')
   if request.method == 'POST':
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -19,14 +21,18 @@ def user_login(request):
 
     if login_form.is_valid():
         login(request, user)
-        return HttpResponseRedirect(reverse('workorders:open'))
+        if redirect_to:
+          return HttpResponseRedirect(redirect_to)
+        else:
+          return HttpResponseRedirect(reverse('workorders:open'))
     else:
       print(login_form.errors)
   else:
     login_form = forms.UserLoginForm()
 
   context = {'title': 'Login',
-             'form':login_form}
+             'form':login_form,
+             'next':redirect_to}
 
   return render(request, 'workorders/login.html', context)
 
@@ -40,7 +46,7 @@ def open(request):
   open_workorder_list = models.WorkOrder.objects.filter(finished__exact=False) \
     .order_by('call_date')
 
-  if ('q' in request.GET and request.GET['q'].strip()):
+  if ('q' in request.GET) and request.GET['q'].strip():
     assigned_entries = models.WorkOrder.objects \
       .assigned_to(request.user.username).filter(finished__exact=False) \
       .order_by('call_date')
@@ -149,4 +155,6 @@ def detail(request, workorder_id):
              'previous_wo': previous_wo,
              'title': 'Detail'}
   return render(request, 'workorders/detail.html', context)
+
+#@login_required
 
