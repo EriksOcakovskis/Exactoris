@@ -1,0 +1,34 @@
+ID;
+Customer name;
+Station name - number;
+Terminal number;
+User name;
+Call date;
+Symptom;
+Issue description;
+Start date;
+Cause;
+Finish date;
+Performed action;
+Solution description;
+RND used;
+Field engineer used
+<br>
+{% for workorder in all_workorders %}
+  {{ workorder.id }};
+  {{ workorder.customer }};
+  {{ workorder.station }};
+  {{ workorder.terminal }};
+  {{ workorder.work_assigned_to }};
+  {{ workorder.call_date|date:"Y-m-d H:i:s" }};
+  {{ workorder.err_symp_id }};
+  {{ workorder.issue_description }};
+  {{ workorder.start_date|date:"Y-m-d H:i:s" }};
+  {{ workorder.err_cause_id }};
+  {{ workorder.finish_date|date:"Y-m-d H:i:s" }};
+  {{ workorder.perf_act_id }};
+  {{ workorder.solution_description }};
+  {{ workorder.rnd_used }};
+  {{ workorder.field_eng_used }}
+  <br>
+{% endfor %}

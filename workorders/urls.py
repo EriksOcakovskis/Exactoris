@@ -14,6 +14,8 @@ urlpatterns = patterns('',
   url(r'^all/', views.all, name='all'),
   # ex: /workorders/add/
   url(r'^add/', views.add, name='add'),
+  # ex: /workorders/reports/
+  url(r'^reports/', views.reports, name='reports'),
   # ex: /workorders/123/
   url(r'^(?P<workorder_id>\d+)/$', views.detail, name='detail'),
   # ex: /workorders/123/edit/

@@ -156,5 +156,8 @@ def detail(request, workorder_id):
              'title': 'Detail'}
   return render(request, 'workorders/detail.html', context)
 
-#@login_required
-
+@login_required
+def reports(request):
+  all_workorder_list = models.WorkOrder.objects.order_by('-call_date')
+  context = {'all_workorders': all_workorder_list}
+  return render(request, 'workorders/reports.html', context)
