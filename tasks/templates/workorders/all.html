@@ -4,14 +4,14 @@
 
 {% block content %}
   <div class="page-header">
-    <h1>All WorkOrders</h1>
+    <h1>All tasks</h1>
   </div>
 
-  {% if workorder_list %}
+  {% if task_list %}
     <div class="row">
       <div class="col-lg-3 col-md-4 col-sm-6 custom_margin">
         <a type="button" class="btn btn-primary" href="?q={{ user.username }}">Show assigned to me</a>
-        <a type="button" class="btn btn-default" href="{% url 'workorders:all' %}">Show all</a>
+        <a type="button" class="btn btn-default" href="{% url 'tasks:all' %}">Show all</a>
       </div>
       <form class="col-lg-3 col-md-4 col-sm-6 custom_margin" method="GET" action="">
         <div class="input-group">
@@ -19,7 +19,7 @@
           <span class="input-group-btn">
             <button class="btn btn-success" type="submit">Search</button>
           </span>
-          {# <a type="button" class="btn btn-default" href="{% url 'workorders:all' %}">Reset Search</a> #}
+          {# <a type="button" class="btn btn-default" href="{% url 'tasks:all' %}">Reset Search</a> #}
         </div>
       </form>
     </div>
@@ -35,16 +35,16 @@
             </tr>
           </thead>
           <tbody>
-            {% for workorder in workorder_list %}
-              {% if workorder.finished == True %}
+            {% for task in task_list %}
+              {% if task.finished == True %}
                 <tr class="done">
               {% else %}
                 <tr class="rowhighlight">
               {% endif %}
-                <th><a href="{% url 'workorders:detail' workorder.id %}" class="rowlink">{{ workorder.id }}</th>
-                <td>{{ workorder.station }}</td>
-                <td>{{ workorder.customer }}</td>
-                <td>{{ workorder.start_date|date:"Y-m-d H:i:s" }}</td>
+                <th><a href="{% url 'tasks:detail' task.id %}" class="rowlink">{{ task.id }}</th>
+                <td>{{ task.station }}</td>
+                <td>{{ task.customer }}</td>
+                <td>{{ task.start_date|date:"Y-m-d H:i:s" }}</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -52,6 +52,6 @@
       </div>
     </div>
   {% else %}
-    <p>No workorders are available.</p>
+    <p>No tasks are available.</p>
   {% endif %}
 {% endblock content %}

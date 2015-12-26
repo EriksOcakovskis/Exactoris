@@ -5,18 +5,18 @@
 
 {% block content %}
   <div class="page-header">
-    <h1> Station: {{ workorder.station }} T{{ workorder.terminal }}</h1>
+    <h1> Station: {{ task.station }} T{{ task.terminal }}</h1>
   </div>
   <nav>
     <ul class="pagination">
       {% if  previous_wo.0 %}
         <li>
-          <a href="{% url 'workorders:detail' previous_wo.0 %}" aria-label="Previous">
+          <a href="{% url 'tasks:detail' previous_wo.0 %}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
         <li>
-          <a href="{% url 'workorders:detail' previous_wo.0 %}">
+          <a href="{% url 'tasks:detail' previous_wo.0 %}">
             {{ previous_wo.0 }}
           </a>
         </li>
@@ -29,18 +29,18 @@
         <li class="disabled"><span>-</span></li>
       {% endif %}
         <li class="active">
-          <a href="{% url 'workorders:detail' workorder.id %}">
-            {{ workorder.id }}
+          <a href="{% url 'tasks:detail' task.id %}">
+            {{ task.id }}
           </a>
         </li>
       {% if next_wo.0 %}
         <li>
-          <a href="{% url 'workorders:detail' next_wo.0 %}">
+          <a href="{% url 'tasks:detail' next_wo.0 %}">
             {{ next_wo.0 }}
           </a>
         </li>
         <li>
-          <a href="{% url 'workorders:detail' next_wo.0 %}" aria-label="Next">
+          <a href="{% url 'tasks:detail' next_wo.0 %}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
@@ -55,10 +55,10 @@
     </ul>
   </nav>
 
-  <form action="{% url 'workorders:edit' workorder.id %}" method="post" autocomplete="off">
+  <form action="{% url 'tasks:edit' task.id %}" method="post" autocomplete="off">
     {% csrf_token %}
     <fieldset>
-      <legend>Work-order number {{ workorder.id }}</legend>
+      <legend>Work-order number {{ task.id }}</legend>
 
     {# Non Field Error row #}
       {% if form.non_field_errors %}
@@ -162,15 +162,15 @@
       </div>
     {# Row start_date End #}
 
-    {# Row workorder_open_time #}
+    {# Row task_open_time #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
           <div class="input-group">
             <div class="custom_form_label left">
-              <label for="id_workorder_open_time">Fix time:</label>
+              <label for="id_task_open_time">Fix time:</label>
             </div>
             <div class="custom_select_wraper">
-              <time id="id_workorder_open_time" class="custom_select custom_select_dropdown">{{ workorder.workorder_open_time }}</time>
+              <time id="id_task_open_time" class="custom_select custom_select_dropdown">{{ task.task_open_time }}</time>
             </div>
           </div>
         </div>
@@ -184,7 +184,7 @@
               <label for="id_req_start_date">Latest start date:</label>
             </div>
             <div class="custom_select_wraper">
-              <time id="id_req_start_date" class="custom_select custom_select_dropdown">{{ workorder.req_start_date|date:"Y-m-d H:i" }}</time>
+              <time id="id_req_start_date" class="custom_select custom_select_dropdown">{{ task.req_start_date|date:"Y-m-d H:i" }}</time>
             </div>
           </div>
         </div>
@@ -407,7 +407,7 @@
               <label for="id_mod_date">Last edited:</label>
             </div>
             <div class="custom_select_wraper">
-              <time id="mod_date" class="custom_select custom_select_dropdown">{{ workorder.mod_date|date:"Y-m-d H:i" }}</time>
+              <time id="mod_date" class="custom_select custom_select_dropdown">{{ task.mod_date|date:"Y-m-d H:i" }}</time>
             </div>
           </div>
         </div>
@@ -594,7 +594,7 @@
     </fieldset>
 
     <div class="row custom_margin col-lg-4 col-md-5 col-sm-6">
-      <a class="btn btn-default" type="button" href="{% url 'workorders:detail' workorder.id %}">Reset</a>
+      <a class="btn btn-default" type="button" href="{% url 'tasks:detail' task.id %}">Reset</a>
       <input class="btn btn-default" type="button" value="Back" onClick="history.go(-1);">
       <input class="btn btn-success" type="submit" value="Save" />
     </div>

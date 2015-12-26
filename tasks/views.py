@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.core.validators import URLValidator
-from workorders import models
-from workorders import forms
+from tasks import models
+from tasks import forms
 from lib.site_globals import get_query
 
 def user_login(request):
@@ -24,7 +24,7 @@ def user_login(request):
         if redirect_to:
           return HttpResponseRedirect(redirect_to)
         else:
-          return HttpResponseRedirect(reverse('workorders:open'))
+          return HttpResponseRedirect(reverse('tasks:open'))
     else:
       print(login_form.errors)
   else:
@@ -34,36 +34,36 @@ def user_login(request):
              'form':login_form,
              'next':redirect_to}
 
-  return render(request, 'workorders/login.html', context)
+  return render(request, 'tasks/login.html', context)
 
 @login_required
 def user_logout(request):
   logout(request)
-  return HttpResponseRedirect(reverse('workorders:login'))
+  return HttpResponseRedirect(reverse('tasks:login'))
 
 @login_required
 def open(request):
-  open_workorder_list = models.WorkOrder.objects.filter(finished__exact=False) \
+  open_task_list = models.task.objects.filter(finished__exact=False) \
     .order_by('call_date')
 
   if ('q' in request.GET) and request.GET['q'].strip():
-    assigned_entries = models.WorkOrder.objects \
+    assigned_entries = models.task.objects \
       .assigned_to(request.user.username).filter(finished__exact=False) \
       .order_by('call_date')
 
     context = {'title': 'Open',
                'time_now': timezone.now(),
-               'open_workorder_list': assigned_entries}
+               'open_task_list': assigned_entries}
   else:
     context = {'title': 'Open',
                'time_now': timezone.now(),
-               'open_workorder_list': open_workorder_list}
+               'open_task_list': open_task_list}
 
-  return render(request, 'workorders/open.html', context)
+  return render(request, 'tasks/open.html', context)
 
 @login_required
 def all(request):
-  all_workorder_list = models.WorkOrder.objects.order_by('-call_date')
+  all_task_list = models.task.objects.order_by('-call_date')
   query_string = ''
   found_entries = None
 
@@ -73,15 +73,15 @@ def all(request):
     entry_query = get_query(query_string, \
       ['station__name', 'customer__name', 'work_assigned_to__user__username',])
 
-    found_entries = all_workorder_list.filter(entry_query)
+    found_entries = all_task_list.filter(entry_query)
 
     context = {'title': 'All',
-               'workorder_list': found_entries}
+               'task_list': found_entries}
   else:
     context = {'title': 'All',
-               'workorder_list': all_workorder_list}
+               'task_list': all_task_list}
 
-  return render(request, 'workorders/all.html', context)
+  return render(request, 'tasks/all.html', context)
 
 def autodate_on_finished(form_data):
   updated_form = form_data.save(commit=False)
@@ -98,7 +98,7 @@ def add_last_edited_by(form_data, request):
 @login_required
 def add(request):
   if request.method == 'POST':
-    add_form = forms.NewWorkOrderForm(request.POST)
+    add_form = forms.NewtaskForm(request.POST)
     if request.POST.get('finished') == 'on':
       add_form.fields['solution_description'].required = True
       add_form.fields['finish_date'].required = True
@@ -112,26 +112,26 @@ def add(request):
         add_author(add_form, request)
         add_last_edited_by(add_form, request)
         add_form.save()
-      return HttpResponseRedirect(reverse('workorders:open'))
+      return HttpResponseRedirect(reverse('tasks:open'))
     else:
       print(add_form.errors)
   else:
-    add_form = forms.NewWorkOrderForm(initial={'call_date' : timezone.now()})
+    add_form = forms.NewtaskForm(initial={'call_date' : timezone.now()})
 
   context = {'form': add_form,
              'title': 'Add'}
 
-  return render(request, 'workorders/add.html', context)
+  return render(request, 'tasks/add.html', context)
 
 @login_required
-def detail(request, workorder_id):
-  workorder = get_object_or_404(models.WorkOrder, pk=workorder_id)
+def detail(request, task_id):
+  task = get_object_or_404(models.task, pk=task_id)
 
-  next_wo = models.WorkOrder.objects.filter(id__gt=workorder.id).order_by('id')[0:1]
-  previous_wo = models.WorkOrder.objects.filter(id__lt=workorder.id).order_by('id')[0:1].reverse()
+  next_wo = models.task.objects.filter(id__gt=task.id).order_by('id')[0:1]
+  previous_wo = models.task.objects.filter(id__lt=task.id).order_by('id')[0:1].reverse()
 
   if request.method == 'POST':
-    detail_form = forms.WorkOrderForm(request.POST, instance = workorder)
+    detail_form = forms.taskForm(request.POST, instance = task)
     if request.POST.get('finished') == 'on':
       detail_form.fields['solution_description'].required = True
       detail_form.fields['finish_date'].required = True
@@ -143,21 +143,21 @@ def detail(request, workorder_id):
       else:
         add_last_edited_by(detail_form, request)
         detail_form.save()
-      return HttpResponseRedirect(reverse('workorders:detail', args=(workorder.id,)))
+      return HttpResponseRedirect(reverse('tasks:detail', args=(task.id,)))
     else:
       print(detail_form.errors)
   else:
-    detail_form = forms.WorkOrderForm(instance = workorder)
+    detail_form = forms.taskForm(instance = task)
 
-  context = {'workorder': workorder,
+  context = {'task': task,
              'form': detail_form,
              'next_wo': next_wo,
              'previous_wo': previous_wo,
              'title': 'Detail'}
-  return render(request, 'workorders/detail.html', context)
+  return render(request, 'tasks/detail.html', context)
 
 @login_required
 def reports(request):
-  all_workorder_list = models.WorkOrder.objects.order_by('-call_date')
-  context = {'all_workorders': all_workorder_list}
-  return render(request, 'workorders/reports.html', context)
+  all_task_list = models.task.objects.order_by('-call_date')
+  context = {'all_tasks': all_task_list}
+  return render(request, 'tasks/reports.html', context)

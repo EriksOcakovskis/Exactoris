@@ -49,7 +49,7 @@ INSTALLED_APPS = (
   'django.contrib.sessions',
   'django.contrib.messages',
   'django.contrib.staticfiles',
-  'workorders',
+  'tasks',
   'smart_selects',
   'widget_tweaks',
 )
@@ -94,7 +94,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Default login pattern
-LOGIN_URL = 'workorders:login'
+LOGIN_URL = 'tasks:login'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

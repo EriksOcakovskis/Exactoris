@@ -4,13 +4,13 @@
 
 {% block content %}
   <div class="page-header">
-    <h1>Open WorkOrders</h1>
+    <h1>Open tasks</h1>
   </div>
-  {% if open_workorder_list %}
+  {% if open_task_list %}
     <div class="row">
       <div class="col-md-4 custom_margin">
       <a type="button" class="btn btn-primary" href="?q={{ user.username }}">Show assigned to me</a>
-      <a type="button" class="btn btn-default" href="{% url 'workorders:open' %}">Show all</a>
+      <a type="button" class="btn btn-default" href="{% url 'tasks:open' %}">Show all</a>
     </div>
     </div>
     <div class="row">
@@ -25,16 +25,16 @@
             </tr>
           </thead>
           <tbody>
-            {% for e in open_workorder_list %}
+            {% for e in open_task_list %}
               {% if e.req_start_date < time_now %}
                 <tr class="overdue">
               {% else %}
                 <tr class="rowhighlight">
               {% endif %}
-                <th ><a  href="{% url 'workorders:detail' e.id %}" class="rowlink">{{ e.id }}</th>
+                <th ><a  href="{% url 'tasks:detail' e.id %}" class="rowlink">{{ e.id }}</th>
                 <td>{{ e.station }}</td>
                 <td>{{ e.customer }}</td>
-                <td>{{ e.workorder_open_time }}</td>
+                <td>{{ e.task_open_time }}</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -42,6 +42,6 @@
       </div>
     </div>
   {% else %}
-    <p>No workorders are available.</p>
+    <p>No tasks are available.</p>
   {% endif %}
 {% endblock content %}
