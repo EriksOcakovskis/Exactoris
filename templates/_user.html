@@ -1,4 +1,8 @@
 <form class="navbar-form navbar-right" action="{% url 'tasks:logout' %}">
-  <span class="custom_navbar_text">Hello {{ user.username }}!</span>
+  {% if user.first_name == '' %}
+    <span class="custom_navbar_text">Hello, {{ user.username }}.</span>
+  {% else %}
+    <span class="custom_navbar_text">Hello, {{ user.first_name }}.</span>
+  {% endif %}
   <button type="submit" class="btn btn-default">Logout</button>
 </form>

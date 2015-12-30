@@ -11,6 +11,9 @@ class TaskManager(models.Manager):
   def assigned_to(self, user):
     return self.filter(assigned_to__user__username__icontains=user)
 
+  def exclude_by_status(self, status):
+    return self.exclude(status__name__exact=status)
+
 class UserProfile(models.Model):
   user = models.OneToOneField(User)
 
@@ -57,7 +60,7 @@ class Task(models.Model):
   # When the task needs to be completed
   deadline = models.DateTimeField(blank=True, null=True)
   # A prerequisite task, can be empty
-  prerequisite = models.ForeignKey('self')
+  prerequisite = models.ForeignKey('self', blank=True, null=True)
   # If a prerequisite is not a task use this field to describe it
   prerequisite_description = models.TextField(blank=True, null=True)
   # Date and time when last edit to the task was made

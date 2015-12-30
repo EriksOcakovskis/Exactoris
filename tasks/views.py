@@ -10,6 +10,7 @@ from django.core.validators import URLValidator
 from tasks import models
 from tasks import forms
 from lib.site_globals import get_query
+from operator import attrgetter
 
 def user_login(request):
   redirect_to = request.REQUEST.get('next')
@@ -21,7 +22,7 @@ def user_login(request):
 
     if login_form.is_valid():
         login(request, user)
-        if redirect_to:
+        if redirect_to != 'None':
           return HttpResponseRedirect(redirect_to)
         else:
           return HttpResponseRedirect(reverse('tasks:open'))
@@ -43,27 +44,30 @@ def user_logout(request):
 
 @login_required
 def open(request):
-  open_task_list = models.task.objects.filter(finished__exact=False) \
-    .order_by('call_date')
+  # not_done_status = models.Status.objects.exclude(name__contains='Done')
+  # open_task_list = []
+  # if ('q' in request.GET) and request.GET['q'].strip():
+  #   for status in not_done_status:
+  #     status_task_list = \
+  #       status.task_set.assigned_to(request.user.username)
+  #     open_task_list.extend(status_task_list)
+  # else:
+  #   for status in not_done_status:
+  #     status_task_list = status.task_set.all()
+  #     open_task_list.extend(status_task_list)
+  # Using custom model manager 'exclude_by_status'
+  open_task_list = models.Task.objects.exclude_by_status('Done').\
+                   order_by('registered')
 
-  if ('q' in request.GET) and request.GET['q'].strip():
-    assigned_entries = models.task.objects \
-      .assigned_to(request.user.username).filter(finished__exact=False) \
-      .order_by('call_date')
-
-    context = {'title': 'Open',
-               'time_now': timezone.now(),
-               'open_task_list': assigned_entries}
-  else:
-    context = {'title': 'Open',
-               'time_now': timezone.now(),
-               'open_task_list': open_task_list}
+  context = {'title': 'Open',
+             'time_now': timezone.now(),
+             'open_task_list': open_task_list}
 
   return render(request, 'tasks/open.html', context)
 
 @login_required
 def all(request):
-  all_task_list = models.task.objects.order_by('-call_date')
+  all_task_list = models.Task.objects.order_by('-call_date')
   query_string = ''
   found_entries = None
 

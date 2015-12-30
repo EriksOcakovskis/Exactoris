@@ -19,22 +19,24 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th>Station name</th>
-              <th>Customer</th>
-              <th>Fix time</th>
+              <th>Task summary</th>
+              <th>Task status</th>
+              <th>Task priority</th>
+              <th>Deadline</th>
             </tr>
           </thead>
           <tbody>
             {% for e in open_task_list %}
-              {% if e.req_start_date < time_now %}
+              {% if e.deadline < time_now %}
                 <tr class="overdue">
               {% else %}
                 <tr class="rowhighlight">
               {% endif %}
                 <th ><a  href="{% url 'tasks:detail' e.id %}" class="rowlink">{{ e.id }}</th>
-                <td>{{ e.station }}</td>
-                <td>{{ e.customer }}</td>
-                <td>{{ e.task_open_time }}</td>
+                <td>{{ e.summary }}</td>
+                <td>{{ e.status }}</td>
+                <td>{{ e.priority }}</td>
+                <td>{{ e.deadline }}</td>
               </tr>
             {% endfor %}
           </tbody>
