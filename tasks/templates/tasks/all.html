@@ -29,9 +29,12 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th>Station name</th>
-              <th>Customer</th>
-              <th>Work start date</th>
+              <th>Summary</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Assignee</th>
+              <th>Pre.ID</th>
+              <th>Deadline</th>
             </tr>
           </thead>
           <tbody>
@@ -42,9 +45,12 @@
                 <tr class="rowhighlight">
               {% endif %}
                 <th><a href="{% url 'tasks:detail' task.id %}" class="rowlink">{{ task.id }}</th>
-                <td>{{ task.station }}</td>
-                <td>{{ task.customer }}</td>
-                <td>{{ task.start_date|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ task.summary }}</td>
+                <td>{{ task.status }}</td>
+                <td>{{ task.priority }}</td>
+                <td>{{ task.assigned_to }}</td>
+                <td>{{ task.prerequisite.id }}</td>
+                <td>{{ task.deadline|date:"d.m.Y" }}</td>
               </tr>
             {% endfor %}
           </tbody>

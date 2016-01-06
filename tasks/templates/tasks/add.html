@@ -9,7 +9,7 @@
   </div>
   <form action="{% url 'tasks:add' %}" method="post" autocomplete="off">
     {% csrf_token %}
-    <fieldset>
+    {# <fieldset> #}
 
     {# Non Field Error row #}
       {% if form.non_field_errors %}
@@ -20,50 +20,42 @@
         </div>
       {% endif %}
 
-    {# Row customer #}
+    {# Row summary #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.customer.errors %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.customer.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.customer class+="custom_select custom_select_dropdown has-warning" %}
-            </div>
+        {% if form.summary.errors %}
+          <div class="custom_form_label top">
+            {{ form.summary.label_tag }}
           </div>
-          {% for error in form.customer.errors %}
+          {% render_field form.summary class+="custom_input has-warning" %}
+          {% for error in form.summary.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
           {% endfor %}
         {% else %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.customer.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.customer class+="custom_select custom_select_dropdown" %}
-            </div>
+          <div class="custom_form_label top">
+            {{ form.summary.label_tag }}
           </div>
+          {% render_field form.summary class+="custom_input" %}
         {% endif %}
         </div>
       </div>
-    {# Row customer End #}
+    {# Row summary End #}
 
-    {# Row station #}
+    {# Row priority #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.station.errors %}
+        {% if form.priority.errors %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.station.label_tag }}
+              {{ form.priority.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.station class+="custom_select custom_select_dropdown has-warning" %}
+              {% render_field form.priority class+="custom_select custom_select_dropdown has-warning" %}
             </div>
           </div>
-          {% for error in form.station.errors %}
+          {% for error in form.priority.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
@@ -71,30 +63,30 @@
         {% else %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.station.label_tag }}
+              {{ form.priority.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.station class+="custom_select custom_select_dropdown" %}
+              {% render_field form.priority class+="custom_select custom_select_dropdown" %}
             </div>
           </div>
         {% endif %}
         </div>
       </div>
-    {# Row station End #}
+    {# Row priority End #}
 
-    {# Row terminal #}
+    {# Row status #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.terminal.errors %}
+        {% if form.status.errors %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.terminal.label_tag }}
+              {{ form.status.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.terminal class+="custom_select custom_select_dropdown has-warning" %}
+              {% render_field form.status class+="custom_select custom_select_dropdown has-warning" %}
             </div>
           </div>
-          {% for error in form.terminal.errors %}
+          {% for error in form.status.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
@@ -102,30 +94,39 @@
         {% else %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.terminal.label_tag }}
+              {{ form.status.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.terminal class+="custom_select custom_select_dropdown" %}
+              <select id="id_status" class="custom_select custom_select_dropdown" name="status">
+                {% for i,o in form.fields.status.choices %}
+                  <option value="{{ i }}"
+                    {% if o == 'To-Do' %}
+                      selected="selected"
+                    {% endif %}>
+                    {{ o }}
+                  </option>
+                {% endfor %}
+              </select>
             </div>
           </div>
         {% endif %}
         </div>
       </div>
-    {# Row terminal End #}
+    {# Row status End #}
 
-    {# Row device #}
+    {# Row assigned_to #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.device.errors %}
+        {% if form.assigned_to.errors %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.device.label_tag }}
+              {{ form.assigned_to.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.device class+="custom_select custom_select_dropdown has-warning" %}
+              {% render_field form.assigned_to class+="custom_select custom_select_dropdown has-warning" %}
             </div>
           </div>
-          {% for error in form.device.errors %}
+          {% for error in form.assigned_to.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
@@ -133,30 +134,30 @@
         {% else %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.device.label_tag }}
+              {{ form.assigned_to.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.device class+="custom_select custom_select_dropdown" %}
+              {% render_field form.assigned_to class+="custom_select custom_select_dropdown" %}
             </div>
           </div>
         {% endif %}
         </div>
       </div>
-    {# Row device End #}
+    {# Row assigned_to End #}
 
-    {# Row call_date #}
+    {# Row deadline #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.call_date.errors %}
+        {% if form.deadline.errors %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.call_date.label_tag }}
+              {{ form.deadline.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.call_date class+="custom_select custom_select_dropdown has-warning text_cursor" %}
+              {% render_field form.deadline class+="custom_select custom_select_dropdown has-warning text_cursor" %}
             </div>
           </div>
-          {% for error in form.call_date.errors %}
+          {% for error in form.deadline.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
@@ -164,47 +165,16 @@
         {% else %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.call_date.label_tag }}
+              {{ form.deadline.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.call_date class+="custom_select custom_select_dropdown text_cursor" %}
+              {% render_field form.deadline class+="custom_select custom_select_dropdown text_cursor" %}
             </div>
           </div>
         {% endif %}
         </div>
       </div>
-    {# Row call_date End #}
-
-    {# Row work_assigned_to #}
-      <div class="row custom_margin">
-        <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.work_assigned_to.errors %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.work_assigned_to.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.work_assigned_to class+="custom_select custom_select_dropdown has-warning" %}
-            </div>
-          </div>
-          {% for error in form.work_assigned_to.errors %}
-            <span id="helpBlock" class="help-block">
-              {{ error|escape }}
-            </span>
-          {% endfor %}
-        {% else %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.work_assigned_to.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.work_assigned_to class+="custom_select custom_select_dropdown" %}
-            </div>
-          </div>
-        {% endif %}
-        </div>
-      </div>
-    {# Row work_assigned_to End #}
+    {# Row deadline End #}
 
     {# Row start_date #}
       <div class="row custom_margin">
@@ -237,19 +207,19 @@
       </div>
     {# Row start_date End #}
 
-    {# Row finished #}
+    {# Row complete_date #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.finished.errors %}
+        {% if form.complete_date.errors %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.finished.label_tag }}
+              {{ form.complete_date.label_tag }}
             </div>
-            <div class="input-group-addon">
-              {% render_field form.finished onClick="JobDoneAutoDate()" id+="job_done" class+="checkbox has-warning" %}
+            <div class="custom_select_wraper">
+              {% render_field form.complete_date id+="job_done_date" class+="custom_select custom_select_dropdown has-warning text_cursor" %}
             </div>
           </div>
-          {% for error in form.finished.errors %}
+          {% for error in form.complete_date.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
@@ -257,115 +227,53 @@
         {% else %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.finished.label_tag }}
+              {{ form.complete_date.label_tag }}
             </div>
-            <div class="input-group-addon">
-              {% render_field form.finished onClick="JobDoneAutoDate()" id+="job_done" class+="checkbox" %}
+            <div class="custom_select_wraper">
+              {% render_field form.complete_date id+="job_done_date" class+="custom_select custom_select_dropdown text_cursor" %}
             </div>
           </div>
         {% endif %}
         </div>
       </div>
-    {# Row finished End #}
+    {# Row complete_date End #}
 
-    {# Row finish_date #}
+    {# Row description #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.finish_date.errors %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.finish_date.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.finish_date id+="job_done_date" class+="custom_select custom_select_dropdown has-warning text_cursor" %}
-            </div>
-          </div>
-          {% for error in form.finish_date.errors %}
-            <span id="helpBlock" class="help-block">
-              {{ error|escape }}
-            </span>
-          {% endfor %}
-        {% else %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.finish_date.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.finish_date id+="job_done_date" class+="custom_select custom_select_dropdown text_cursor" %}
-            </div>
-          </div>
-        {% endif %}
-        </div>
-      </div>
-    {# Row finish_date End #}
-
-    {# Row err_symp_id #}
-      <div class="row custom_margin">
-        <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.err_symp_id.errors %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.err_symp_id.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.err_symp_id class+="custom_select custom_select_dropdown has-warning" %}
-            </div>
-          </div>
-          {% for error in form.err_symp_id.errors %}
-            <span id="helpBlock" class="help-block">
-              {{ error|escape }}
-            </span>
-          {% endfor %}
-        {% else %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.err_symp_id.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.err_symp_id class+="custom_select custom_select_dropdown" %}
-            </div>
-          </div>
-        {% endif %}
-        </div>
-      </div>
-    {# Row err_symp_id End #}
-
-    {# Row issue_description #}
-      <div class="row custom_margin">
-        <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.issue_description.errors %}
+        {% if form.description.errors %}
           <div class="custom_form_label top">
-            {{ form.issue_description.label_tag }}
+            {{ form.description.label_tag }}
           </div>
-          {% render_field form.issue_description class+="custom_textarea has-warning" %}
-          {% for error in form.issue_description.errors %}
+          {% render_field form.description class+="custom_textarea has-warning" %}
+          {% for error in form.description.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
           {% endfor %}
         {% else %}
           <div class="custom_form_label top">
-            {{ form.issue_description.label_tag }}
+            {{ form.description.label_tag }}
           </div>
-          {% render_field form.issue_description class+="custom_textarea" %}
+          {% render_field form.description class+="custom_textarea" %}
         {% endif %}
         </div>
       </div>
-    {# Row issue_description End #}
+    {# Row description End #}
 
-    {# Row err_cause_id #}
+    {# Row prerequisite #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.err_cause_id.errors %}
+        {% if form.prerequisite.errors %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.err_cause_id.label_tag }}
+              {{ form.prerequisite.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.err_cause_id class+="custom_select custom_select_dropdown has-warning" %}
+              {% render_field form.prerequisite class+="custom_select custom_select_dropdown has-warning" %}
             </div>
           </div>
-          {% for error in form.err_cause_id.errors %}
+          {% for error in form.prerequisite.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
@@ -373,134 +281,64 @@
         {% else %}
           <div class="input-group">
             <div class="custom_form_label left">
-              {{ form.err_cause_id.label_tag }}
+              {{ form.prerequisite.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.err_cause_id class+="custom_select custom_select_dropdown" %}
+              {% render_field form.prerequisite class+="custom_select custom_select_dropdown" %}
             </div>
           </div>
         {% endif %}
         </div>
       </div>
-    {# Row err_cause_id End #}
+    {# Row prerequisite End #}
 
-    {# Row perf_act_id #}
+    {# Row prerequisite_description #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.perf_act_id.errors %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.perf_act_id.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.perf_act_id class+="custom_select custom_select_dropdown has-warning" %}
-            </div>
-          </div>
-          {% for error in form.perf_act_id.errors %}
-            <span id="helpBlock" class="help-block">
-              {{ error|escape }}
-            </span>
-          {% endfor %}
-        {% else %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.perf_act_id.label_tag }}
-            </div>
-            <div class="custom_select_wraper">
-              {% render_field form.perf_act_id class+="custom_select custom_select_dropdown" %}
-            </div>
-          </div>
-        {% endif %}
-        </div>
-      </div>
-    {# Row perf_act_id End #}
-
-    {# Row solution_description #}
-      <div class="row custom_margin">
-        <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.solution_description.errors %}
+        {% if form.prerequisite_description.errors %}
           <div class="custom_form_label top">
-            {{ form.solution_description.label_tag }}
+            {{ form.prerequisite_description.label_tag }}
           </div>
-          {% render_field form.solution_description class+="custom_textarea has-warning" %}
-          {% for error in form.solution_description.errors %}
+          {% render_field form.prerequisite_description class+="custom_textarea has-warning" %}
+          {% for error in form.prerequisite_description.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
           {% endfor %}
         {% else %}
           <div class="custom_form_label top">
-            {{ form.solution_description.label_tag }}
+            {{ form.prerequisite_description.label_tag }}
           </div>
-          {% render_field form.solution_description class+="custom_textarea" %}
+          {% render_field form.prerequisite_description class+="custom_textarea" %}
         {% endif %}
         </div>
       </div>
-    {# Row solution_description End #}
+    {# Row prerequisite_description End #}
 
-    {# Row rnd_used #}
+    {# Row commentary #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.rnd_used.errors %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.rnd_used.label_tag }}
-            </div>
-            <div class="input-group-addon">
-              {% render_field form.rnd_used class+="checkbox has-warning" %}
-            </div>
+        {% if form.commentary.errors %}
+          <div class="custom_form_label top">
+            {{ form.commentary.label_tag }}
           </div>
-          {% for error in form.rnd_used.errors %}
+          {% render_field form.commentary class+="custom_textarea has-warning" %}
+          {% for error in form.commentary.errors %}
             <span id="helpBlock" class="help-block">
               {{ error|escape }}
             </span>
           {% endfor %}
         {% else %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.rnd_used.label_tag }}
-            </div>
-            <div class="input-group-addon">
-              {% render_field form.rnd_used class+="checkbox" %}
-            </div>
+          <div class="custom_form_label top">
+            {{ form.commentary.label_tag }}
           </div>
+          {% render_field form.commentary class+="custom_textarea" %}
         {% endif %}
         </div>
       </div>
-    {# Row rnd_used End #}
+    {# Row commentary End #}
 
-    {# Row field_eng_used #}
-      <div class="row custom_margin">
-        <div class="col-lg-4 col-md-5 col-sm-6">
-        {% if form.field_eng_used.errors %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.field_eng_used.label_tag }}
-            </div>
-            <div class="input-group-addon">
-              {% render_field form.field_eng_used class+="checkbox has-warning" %}
-            </div>
-          </div>
-          {% for error in form.field_eng_used.errors %}
-            <span id="helpBlock" class="help-block">
-              {{ error|escape }}
-            </span>
-          {% endfor %}
-        {% else %}
-          <div class="input-group">
-            <div class="custom_form_label left">
-              {{ form.field_eng_used.label_tag }}
-            </div>
-            <div class="input-group-addon">
-              {% render_field form.field_eng_used class+="checkbox" %}
-            </div>
-          </div>
-        {% endif %}
-        </div>
-      </div>
-    {# Row field_eng_used End #}
-
-    </fieldset>
+    {# </fieldset> #}
     <div class="row custom_margin col-lg-4 col-md-5 col-sm-6">
       <input class="btn btn-default" type="reset" value="Reset" />
       <input class="btn btn-success" type="submit" value="Save" />

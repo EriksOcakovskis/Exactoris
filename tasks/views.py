@@ -44,20 +44,12 @@ def user_logout(request):
 
 @login_required
 def open(request):
-  # not_done_status = models.Status.objects.exclude(name__contains='Done')
-  # open_task_list = []
-  # if ('q' in request.GET) and request.GET['q'].strip():
-  #   for status in not_done_status:
-  #     status_task_list = \
-  #       status.task_set.assigned_to(request.user.username)
-  #     open_task_list.extend(status_task_list)
-  # else:
-  #   for status in not_done_status:
-  #     status_task_list = status.task_set.all()
-  #     open_task_list.extend(status_task_list)
-  # Using custom model manager 'exclude_by_status'
-  open_task_list = models.Task.objects.exclude_by_status('Done').\
-                   order_by('registered')
+  if ('q' in request.GET) and request.GET['q'].strip():
+    open_task_list = models.Task.objects.\
+                   exclude_by_status_assigned_to(request.user.username, 'Done')
+  else:
+    open_task_list = models.Task.objects.exclude_by_status('Done').\
+                     order_by('registered')
 
   context = {'title': 'Open',
              'time_now': timezone.now(),
@@ -67,7 +59,6 @@ def open(request):
 
 @login_required
 def all(request):
-  all_task_list = models.Task.objects.order_by('-call_date')
   query_string = ''
   found_entries = None
 
@@ -75,15 +66,15 @@ def all(request):
     query_string = request.GET['q']
 
     entry_query = get_query(query_string, \
-      ['station__name', 'customer__name', 'work_assigned_to__user__username',])
+      ['summary', 'id', 'assigned_to__user__username',])
 
-    found_entries = all_task_list.filter(entry_query)
-
-    context = {'title': 'All',
-               'task_list': found_entries}
+    all_task_list = models.Task.objects.order_by('registered')\
+                    .filter(entry_query)
   else:
-    context = {'title': 'All',
-               'task_list': all_task_list}
+    all_task_list = models.Task.objects.order_by('registered')
+
+  context = {'title': 'All',
+             'task_list': all_task_list}
 
   return render(request, 'tasks/all.html', context)
 
@@ -102,10 +93,10 @@ def add_last_edited_by(form_data, request):
 @login_required
 def add(request):
   if request.method == 'POST':
-    add_form = forms.NewtaskForm(request.POST)
-    if request.POST.get('finished') == 'on':
-      add_form.fields['solution_description'].required = True
-      add_form.fields['finish_date'].required = True
+    add_form = forms.NewTaskForm(request.POST)
+    # if request.POST.get('finished') == 'on':
+    #   add_form.fields['solution_description'].required = True
+    #   add_form.fields['finish_date'].required = True
     if add_form.is_valid():
       if add_form.cleaned_data['finished'] == True and not add_form.cleaned_data['finish_date']:
         add_author(add_form, request)
@@ -120,7 +111,7 @@ def add(request):
     else:
       print(add_form.errors)
   else:
-    add_form = forms.NewtaskForm(initial={'call_date' : timezone.now()})
+    add_form = forms.NewTaskForm()#initial={'call_date' : timezone.now()})
 
   context = {'form': add_form,
              'title': 'Add'}
@@ -129,13 +120,13 @@ def add(request):
 
 @login_required
 def detail(request, task_id):
-  task = get_object_or_404(models.task, pk=task_id)
+  task = get_object_or_404(models.Task, pk=task_id)
 
-  next_wo = models.task.objects.filter(id__gt=task.id).order_by('id')[0:1]
-  previous_wo = models.task.objects.filter(id__lt=task.id).order_by('id')[0:1].reverse()
+  next_tks = models.Task.objects.filter(id__gt=task.id).order_by('id')[0:1]
+  previous_tsk = models.Task.objects.filter(id__lt=task.id).order_by('id')[0:1].reverse()
 
   if request.method == 'POST':
-    detail_form = forms.taskForm(request.POST, instance = task)
+    detail_form = forms.TaskForm(request.POST, instance = task)
     if request.POST.get('finished') == 'on':
       detail_form.fields['solution_description'].required = True
       detail_form.fields['finish_date'].required = True
@@ -151,12 +142,12 @@ def detail(request, task_id):
     else:
       print(detail_form.errors)
   else:
-    detail_form = forms.taskForm(instance = task)
+    detail_form = forms.TaskForm(instance = task)
 
   context = {'task': task,
              'form': detail_form,
-             'next_wo': next_wo,
-             'previous_wo': previous_wo,
+             'next_tks': next_tks,
+             'previous_tsk': previous_tsk,
              'title': 'Detail'}
   return render(request, 'tasks/detail.html', context)
 

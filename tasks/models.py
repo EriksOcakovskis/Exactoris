@@ -14,11 +14,15 @@ class TaskManager(models.Manager):
   def exclude_by_status(self, status):
     return self.exclude(status__name__exact=status)
 
+  def exclude_by_status_assigned_to(self, user, status):
+    t = self.filter(assigned_to__user__username__icontains=user)
+    return t.exclude(status__name__exact=status)
+
 class UserProfile(models.Model):
   user = models.OneToOneField(User)
 
   def __str__(self):
-    return self.user.username
+    return '%s %s' % (self.user.first_name, self.user.last_name)
 
 class Priority(models.Model):
   name = models.CharField(max_length=50)
@@ -44,7 +48,7 @@ class Task(models.Model):
   # Task description, can be empty
   description = models.TextField(blank=True, null=True)
   # Date and time when task was created, automatic on submit
-  registered = models.DateTimeField(auto_now_add=True, blank=False)
+  registered = models.DateTimeField(editable=False)
   # Person who created the task, can be website admin
   author = models.ForeignKey(User)
   # To whom this task is assigned to, can't be website admin
@@ -58,13 +62,13 @@ class Task(models.Model):
   # Date and time when the task was complete
   complete_date = models.DateTimeField(blank=True, null=True)
   # When the task needs to be completed
-  deadline = models.DateTimeField(blank=True, null=True)
+  deadline = models.DateField(blank=True, null=True)
   # A prerequisite task, can be empty
   prerequisite = models.ForeignKey('self', blank=True, null=True)
   # If a prerequisite is not a task use this field to describe it
   prerequisite_description = models.TextField(blank=True, null=True)
   # Date and time when last edit to the task was made
-  last_edited = models.DateTimeField(auto_now=True, blank=False)
+  last_edited = models.DateTimeField()
   # Who last edited the task
   last_edited_by = models.CharField(max_length=50, blank=False, null=True)
   # Additional comments
@@ -85,6 +89,12 @@ class Task(models.Model):
   # How long the task has been worked on
   work_time = property(_get_work_time)
   objects = TaskManager()
+
+  def save(self, *args, **kwargs):
+    if not self.id:
+      self.registered = timezone.now()
+    self.last_edited = timezone.now()
+    return super(Task, self).save(*args, **kwargs)
 
   def __str__(self):
     return '%s - %s' % (str(self.id), self.summary )

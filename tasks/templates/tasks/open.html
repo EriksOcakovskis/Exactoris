@@ -19,9 +19,11 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th>Task summary</th>
-              <th>Task status</th>
-              <th>Task priority</th>
+              <th>Summary</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Assignee</th>
+              <th>Pre.ID</th>
               <th>Deadline</th>
             </tr>
           </thead>
@@ -36,7 +38,9 @@
                 <td>{{ e.summary }}</td>
                 <td>{{ e.status }}</td>
                 <td>{{ e.priority }}</td>
-                <td>{{ e.deadline }}</td>
+                <td>{{ e.assigned_to }}</td>
+                <td>{{ e.prerequisite.id }}</td>
+                <td>{{ e.deadline|date:"d.m.Y" }}</td>
               </tr>
             {% endfor %}
           </tbody>
