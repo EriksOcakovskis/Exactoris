@@ -191,7 +191,7 @@
               {{ form.deadline.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.deadline class+="custom_select custom_select_dropdown has-warning text_cursor" %}
+              {% render_field form.deadline class+="datepicker custom_select custom_select_dropdown has-warning text_cursor" %}
             </div>
           </div>
           {% for error in form.deadline.errors %}
@@ -205,7 +205,7 @@
               {{ form.deadline.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.deadline class+="custom_select custom_select_dropdown text_cursor" %}
+              {% render_field form.deadline class+="datepicker custom_select custom_select_dropdown text_cursor" %}
             </div>
           </div>
         {% endif %}
@@ -222,7 +222,7 @@
               {{ form.start_date.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.start_date class+="custom_select custom_select_dropdown has-warning text_cursor" %}
+              {% render_field form.start_date class+="datetimepicker custom_select custom_select_dropdown has-warning text_cursor" %}
             </div>
           </div>
           {% for error in form.start_date.errors %}
@@ -236,7 +236,7 @@
               {{ form.start_date.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.start_date class+="custom_select custom_select_dropdown text_cursor" %}
+              {% render_field form.start_date class+="datetimepicker custom_select custom_select_dropdown text_cursor" %}
             </div>
           </div>
         {% endif %}
@@ -253,7 +253,7 @@
               {{ form.complete_date.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.complete_date id+="job_done_date" class+="custom_select custom_select_dropdown has-warning text_cursor" %}
+              {% render_field form.complete_date class+="datetimepicker custom_select custom_select_dropdown has-warning text_cursor" %}
             </div>
           </div>
           {% for error in form.complete_date.errors %}
@@ -267,7 +267,7 @@
               {{ form.complete_date.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              {% render_field form.complete_date id+="job_done_date" class+="custom_select custom_select_dropdown text_cursor" %}
+              {% render_field form.complete_date class+=" datetimepicker custom_select custom_select_dropdown text_cursor" %}
             </div>
           </div>
         {% endif %}

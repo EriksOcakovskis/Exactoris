@@ -40,12 +40,12 @@ var my_minutes = ('0'+dateNow.getMinutes()).slice(-2);
 var my_seconds = ('0'+dateNow.getSeconds()).slice(-2);
 var newDate = my_year+"-"+my_month+"-"+my_day+" "+my_hours+":"+my_minutes+":"+my_seconds;
 
-userMenu.onchange=function(){ //run some code when "onchange" event fires
- var chosenoption=this.options[this.selectedIndex] //this refers to "selectmenu"
- if (chosenoption.value!="nothing"){
-  jobStartDate.value = newDate.toString();
- }
-}
+// userMenu.onchange=function(){ //run some code when "onchange" event fires
+//  var chosenoption=this.options[this.selectedIndex] //this refers to "selectmenu"
+//  if (chosenoption.value!="nothing"){
+//   jobStartDate.value = newDate.toString();
+//  }
+// }
 
 // Copyright 2014-2015 Twitter, Inc.
 // Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -58,3 +58,25 @@ if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
   )
   document.querySelector('head').appendChild(msViewportStyle)
 }
+
+// Date picker initializer
+$(document).ready(function () {
+    $(".datepicker").datetimepicker({
+      format: 'DD.MM.YYYY',
+      showTodayButton: true,
+      showClear: true,
+      useCurrent: false,
+      keyBinds: { right: '', left: ''  }
+    });
+});
+
+// Datetime picker initializer
+$(document).ready(function () {
+    $(".datetimepicker").datetimepicker({
+      format: 'DD.MM.YYYY HH:mm:ss',
+      showTodayButton: true,
+      showClear: true,
+      useCurrent: false,
+      keyBinds: { right: '', left: ''  }
+    });
+});
