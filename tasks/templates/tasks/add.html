@@ -97,16 +97,7 @@
               {{ form.status.label_tag }}
             </div>
             <div class="custom_select_wraper">
-              <select id="id_status" class="custom_select custom_select_dropdown" name="status">
-                {% for i,o in form.fields.status.choices %}
-                  <option value="{{ i }}"
-                    {% if o == 'To-Do' %}
-                      selected="selected"
-                    {% endif %}>
-                    {{ o }}
-                  </option>
-                {% endfor %}
-              </select>
+              {% render_field form.status class+="custom_select custom_select_dropdown" %}
             </div>
           </div>
         {% endif %}

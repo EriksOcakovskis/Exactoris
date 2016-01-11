@@ -28,6 +28,12 @@ class UserLoginForm(forms.ModelForm):
         code='Locked user')
 
 class TaskForm(forms.ModelForm):
+  start_date = forms.DateTimeField(input_formats=['%d.%m.%Y %H:%M:%S', '%Y-%m-%d %H:%M'],\
+    widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'), required=False)
+  complete_date = forms.DateTimeField(input_formats=['%d.%m.%Y %H:%M:%S', '%Y-%m-%d %H:%M'],\
+    widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'), required=False)
+  deadline = forms.DateField(input_formats=['%d.%m.%Y', '%Y-%m-%d'],\
+    widget=forms.DateInput(format='%d.%m.%Y'), required=False)
   class Meta:
     model = models.Task
     fields = ('id',
@@ -47,13 +53,10 @@ class TaskForm(forms.ModelForm):
               'last_edited',
               'last_edited_by',
               'commentary',)
-    exclude = ('registered',)
+    exclude = ('registered', 'last_edited_by', 'author', 'last_edited',)
     widgets = {'description': forms.Textarea(attrs={'cols': 50, 'rows': 4}),
                'prerequisite_description': forms.Textarea(attrs={'cols': 50, 'rows': 4}),
-               'commentary': forms.Textarea(attrs={'cols': 50, 'rows': 4}),
-               'start_date': forms.DateInput(format='%d.%m.%Y %H:%M'),
-               'complete_date': forms.DateInput(format='%d.%m.%Y %H:%M'),
-               'deadline': forms.DateInput(format='%d.%m.%Y'),}
+               'commentary': forms.Textarea(attrs={'cols': 50, 'rows': 4}),}
 
   def clean(self):
     cleaned_data = super(TaskForm, self).clean()
@@ -68,4 +71,5 @@ class TaskForm(forms.ModelForm):
 
 class NewTaskForm(TaskForm):
   complete_date = forms.DateTimeField(required=False)
-  exclude = ('registered',)
+  class Meta(TaskForm.Meta):
+    exclude = ('registered', 'last_edited_by', 'author', 'last_edited',)

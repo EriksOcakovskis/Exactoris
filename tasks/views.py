@@ -90,28 +90,35 @@ def add_last_edited_by(form_data, request):
   updated_form = form_data.save(commit=False)
   updated_form.last_edited_by = request.user.username
 
+def get_status_id(status_name):
+  s = models.Status.objects.get(name=status_name)
+  return s.id
+
+def get_status_name(status_id):
+  s = models.Status.objects.get(id=status_id)
+  return s.name
+
 @login_required
 def add(request):
   if request.method == 'POST':
     add_form = forms.NewTaskForm(request.POST)
-    # if request.POST.get('finished') == 'on':
-    #   add_form.fields['solution_description'].required = True
-    #   add_form.fields['finish_date'].required = True
+    status_name = get_status_name(request.POST.get('status'))
+    if status_name == 'Done':
+      add_form.fields['start_date'].required = True
+      add_form.fields['complete_date'].required = True
+      add_form.fields['assigned_to'].required = True
+    if status_name == 'In progress':
+      add_form.fields['start_date'].required = True
+      add_form.fields['assigned_to'].required = True
     if add_form.is_valid():
-      if add_form.cleaned_data['finished'] == True and not add_form.cleaned_data['finish_date']:
-        add_author(add_form, request)
-        add_last_edited_by(add_form, request)
-        autodate_on_finished(add_form)
-        add_form.save()
-      else:
-        add_author(add_form, request)
-        add_last_edited_by(add_form, request)
-        add_form.save()
+      add_author(add_form, request)
+      add_last_edited_by(add_form, request)
+      add_form.save()
       return HttpResponseRedirect(reverse('tasks:open'))
     else:
       print(add_form.errors)
   else:
-    add_form = forms.NewTaskForm()#initial={'call_date' : timezone.now()})
+    add_form = forms.NewTaskForm(initial={'status' : get_status_id('To-Do')})
 
   context = {'form': add_form,
              'title': 'Add'}
@@ -127,17 +134,17 @@ def detail(request, task_id):
 
   if request.method == 'POST':
     detail_form = forms.TaskForm(request.POST, instance = task)
-    if request.POST.get('finished') == 'on':
-      detail_form.fields['solution_description'].required = True
-      detail_form.fields['finish_date'].required = True
+    status_name = get_status_name(request.POST.get('status'))
+    if status_name == 'Done':
+      detail_form.fields['start_date'].required = True
+      detail_form.fields['complete_date'].required = True
+      detail_form.fields['assigned_to'].required = True
+    if status_name == 'In progress':
+      detail_form.fields['start_date'].required = True
+      detail_form.fields['assigned_to'].required = True
     if detail_form.is_valid():
-      if detail_form.cleaned_data['finished'] == True and not detail_form.cleaned_data['finish_date']:
-        add_last_edited_by(detail_form, request)
-        autodate_on_finished(detail_form)
-        detail_form.save()
-      else:
-        add_last_edited_by(detail_form, request)
-        detail_form.save()
+      add_last_edited_by(detail_form, request)
+      detail_form.save()
       return HttpResponseRedirect(reverse('tasks:detail', args=(task.id,)))
     else:
       print(detail_form.errors)
@@ -153,6 +160,6 @@ def detail(request, task_id):
 
 @login_required
 def reports(request):
-  all_task_list = models.task.objects.order_by('-call_date')
+  all_task_list = models.Task.objects.order_by('-registered')
   context = {'all_tasks': all_task_list}
   return render(request, 'tasks/reports.html', context)
