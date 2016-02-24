@@ -36,7 +36,7 @@
               {% endif %}
                 <th ><a  href="{% url 'tasks:detail' e.id %}" class="rowlink">{{ e.id }}</th>
                 <td>{{ e.summary }}</td>
-                <td>{{ e.status }}</td>
+                <td>{{ e.get_status_display }}</td>
                 <td>{{ e.priority }}</td>
                 <td>{{ e.assigned_to }}</td>
                 <td>{{ e.prerequisite.id }}</td>

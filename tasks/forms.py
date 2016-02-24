@@ -34,6 +34,8 @@ class TaskForm(forms.ModelForm):
     widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'), required=False)
   deadline = forms.DateField(input_formats=['%d.%m.%Y', '%Y-%m-%d'],\
     widget=forms.DateInput(format='%d.%m.%Y'), required=False)
+  dateof_recurrence = forms.DateField(input_formats=['%d.%m.%Y', '%Y-%m-%d'],\
+    widget=forms.DateInput(format='%d.%m.%Y'), required=False)
   class Meta:
     model = models.Task
     fields = ('id',
@@ -41,7 +43,9 @@ class TaskForm(forms.ModelForm):
               'priority',
               'status',
               'assigned_to',
-              # recurring
+              'recurring',
+              'typeof_recurrence',
+              'dateof_recurrence',
               'deadline',
               'start_date',
               'complete_date',
@@ -66,8 +70,8 @@ class TaskForm(forms.ModelForm):
     if start_date and complete_date:
       if complete_date <= start_date:
         self.add_error('complete_date', ValidationError(
-                      _('Work "complete date" cant be before or at "start date"'),
-                      code='Wrong date/time',))
+                    _('Work "complete date" cant be before or at "start date"'),
+                    code='Wrong date/time',))
 
 class NewTaskForm(TaskForm):
   complete_date = forms.DateTimeField(required=False)

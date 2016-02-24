@@ -362,6 +362,12 @@ span.help-block {
   margin-bottom: 0;
 }
 
+
+.animation_container{
+  overflow: hidden;
+  height: 0;
+}
+
 /*
  * IE10 viewport hack for Surface/desktop Windows 8 bug
  */

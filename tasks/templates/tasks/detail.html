@@ -182,6 +182,105 @@
       </div>
     {# Row assigned_to End #}
 
+    {# Row recurring #}
+      <div class="row custom_margin">
+        <div class="col-lg-4 col-md-5 col-sm-6">
+        {% if form.recurring.errors %}
+          <div class="input-group">
+            <div class="custom_form_label left">
+              {{ form.recurring.label_tag }}
+            </div>
+            <div class="input-group-addon">
+              {% render_field form.recurring onClick="showHideRecurrence()" id+="recurring" class+="checkbox has-warning" %}
+            </div>
+          </div>
+          {% for error in form.recurring.errors %}
+            <span id="helpBlock" class="help-block">
+              {{ error|escape }}
+            </span>
+          {% endfor %}
+        {% else %}
+          <div class="input-group">
+            <div class="custom_form_label left">
+              {{ form.recurring.label_tag }}
+            </div>
+            <div class="input-group-addon">
+              {% render_field form.recurring onClick="showHideRecurrence()" id+="recurring" class+="checkbox" %}
+            </div>
+          </div>
+        {% endif %}
+        </div>
+      </div>
+    {# Row recurring End #}
+
+    {# Animation container #}
+    <div class="animation_container" id="animation_container">
+
+      {# Row typeof_recurrence #}
+        <div class="row custom_margin" id="typeof_recurrence">
+          <div class="col-lg-4 col-md-5 col-sm-6">
+          {% if form.typeof_recurrence.errors %}
+            <div class="input-group">
+              <div class="custom_form_label left">
+                {{ form.typeof_recurrence.label_tag }}
+              </div>
+              <div class="custom_select_wraper">
+                {% render_field form.typeof_recurrence class+="custom_select custom_select_dropdown has-warning" %}
+              </div>
+            </div>
+            {% for error in form.typeof_recurrence.errors %}
+              <span id="helpBlock" class="help-block">
+                {{ error|escape }}
+              </span>
+            {% endfor %}
+          {% else %}
+            <div class="input-group">
+              <div class="custom_form_label left">
+                {{ form.typeof_recurrence.label_tag }}
+              </div>
+              <div class="custom_select_wraper">
+                {% render_field form.typeof_recurrence class+="custom_select custom_select_dropdown" %}
+              </div>
+            </div>
+          {% endif %}
+          </div>
+        </div>
+      {# Row typeof_recurrence End #}
+
+      {# Row dateof_recurrence #}
+        <!-- div class="row custom_margin" id="dateof_recurrence">
+          <div class="col-lg-4 col-md-5 col-sm-6">
+          {% if form.dateof_recurrence.errors %}
+            <div class="input-group">
+              <div class="custom_form_label left">
+                {{ form.dateof_recurrence.label_tag }}
+              </div>
+              <div class="custom_select_wraper">
+                {% render_field form.dateof_recurrence class+="datepicker custom_select custom_select_dropdown has-warning text_cursor" %}
+              </div>
+            </div>
+            {% for error in form.dateof_recurrence.errors %}
+              <span id="helpBlock" class="help-block">
+                {{ error|escape }}
+              </span>
+            {% endfor %}
+          {% else %}
+            <div class="input-group">
+              <div class="custom_form_label left">
+                {{ form.dateof_recurrence.label_tag }}
+              </div>
+              <div class="custom_select_wraper">
+                {% render_field form.dateof_recurrence class+="datepicker custom_select custom_select_dropdown text_cursor" %}
+              </div>
+            </div>
+          {% endif %}
+          </div>
+        </div -->
+      {# Row dateof_recurrence End #}
+
+    </div>
+    {# Animation container End #}
+
     {# Row deadline #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">
@@ -442,6 +541,38 @@
         </div>
       </div>
     {# Row commentary End #}
+
+    {# Row work_log #}
+    {% if work_log %}
+      <div class="row custom_margin">
+        <div class="col-lg-4 col-md-5 col-sm-6">
+          <div class="custom_form_label top">
+            <label>Work log:</label>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Start date</th>
+                <th>Complete date</th>
+                <th>Asignee</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for value in work_log %}
+                <tr>
+                  <td>{{ value.start_date }}</td>
+                  <td>{{ value.complete_date }}</td>
+                  <td>{{ value.assigned_to }}</td>
+                  <td>{{ value.notes }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+    {# Row work_log End #}
 
     </fieldset>
 

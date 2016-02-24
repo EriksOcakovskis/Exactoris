@@ -9,13 +9,13 @@ class PriorityAdmin(admin.ModelAdmin):
       obj.save()
   search_fields = ['name']
 
-class StatusAdmin(admin.ModelAdmin):
-  list_display = ('name', 'created_date', 'mod_date', 'last_edited_by')
-  exclude = ('last_edited_by',)
-  def save_model(self, request, obj, form, change):
-      obj.last_edited_by = request.user.username
-      obj.save()
-  search_fields = ['name']
+# class StatusAdmin(admin.ModelAdmin):
+#   list_display = ('name', 'created_date', 'mod_date', 'last_edited_by')
+#   exclude = ('last_edited_by',)
+#   def save_model(self, request, obj, form, change):
+#       obj.last_edited_by = request.user.username
+#       obj.save()
+#   search_fields = ['name']
 
 class TaskAdmin(admin.ModelAdmin):
   list_display = ('id', 'summary', 'registered', 'author',
@@ -28,7 +28,11 @@ class TaskAdmin(admin.ModelAdmin):
   list_filter = ['priority', 'status']
   search_fields = ['author', 'assigned_to', 'summary']
 
+class WorkLogAdmin(admin.ModelAdmin):
+  list_display = ('task', 'start_date', 'complete_date', 'assigned_to', 'notes',)
+
 admin.site.register(models.Task, TaskAdmin)
 admin.site.register(models.Priority, PriorityAdmin)
-admin.site.register(models.Status, StatusAdmin)
+# admin.site.register(models.Status, StatusAdmin)
 admin.site.register(models.UserProfile)
+admin.site.register(models.WorkLog, WorkLogAdmin)

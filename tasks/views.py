@@ -11,6 +11,7 @@ from tasks import models
 from tasks import forms
 from lib.site_globals import get_query
 from operator import attrgetter
+import datetime
 
 def user_login(request):
   redirect_to = request.REQUEST.get('next')
@@ -45,11 +46,14 @@ def user_logout(request):
 @login_required
 def open(request):
   if ('q' in request.GET) and request.GET['q'].strip():
-    open_task_list = models.Task.objects.\
-                   exclude_by_status_assigned_to(request.user.username, 'Done')
+    open_task_list = models.Task.objects\
+      .assigned_to(request.user.username)\
+      .exclude(status=4)\
+      .order_by('registered')
   else:
-    open_task_list = models.Task.objects.exclude_by_status('Done').\
-                     order_by('registered')
+    open_task_list = models.Task.objects\
+      .exclude(status=4)\
+      .order_by('registered')
 
   context = {'title': 'Open',
              'time_now': timezone.now(),
@@ -98,18 +102,36 @@ def get_status_name(status_id):
   s = models.Status.objects.get(id=status_id)
   return s.name
 
+def set_req_fields(status_id, form):
+  if status_id == '4': # status 'Done'
+    form.fields['start_date'].required = True
+    form.fields['complete_date'].required = True
+    form.fields['assigned_to'].required = True
+  if status_id == '1': # status 'In progress'
+    form.fields['start_date'].required = True
+    form.fields['assigned_to'].required = True
+
+def overdue_check(status_id, deadline, form):
+  if status_id == '2': # status 'Overdue'
+    deadline_iso = datetime.datetime.strptime(deadline, '%d.%m.%Y')\
+      .date().isoformat()
+    if deadline_iso >= str(timezone.now())[:10]:
+      form.add_error('status', ValidationError(
+                      _('Status is "Overdue" but "Deadline" is in the future!'),
+                      code='Wrong status',))
+      form.add_error('deadline', ValidationError(
+                      _('Are you sure about the "Deadline"?'),
+                      code='Wrong deadline',))
+
 @login_required
 def add(request):
   if request.method == 'POST':
     add_form = forms.NewTaskForm(request.POST)
-    status_name = get_status_name(request.POST.get('status'))
-    if status_name == 'Done':
-      add_form.fields['start_date'].required = True
-      add_form.fields['complete_date'].required = True
-      add_form.fields['assigned_to'].required = True
-    if status_name == 'In progress':
-      add_form.fields['start_date'].required = True
-      add_form.fields['assigned_to'].required = True
+    post_recurring = request.POST.get('recurring')
+    post_deadline = request.POST.get('deadline')
+    post_status = request.POST.get('status')
+    set_req_fields(post_status, add_form)
+    # overdue_check(post_status, post_deadline, add_form)
     if add_form.is_valid():
       add_author(add_form, request)
       add_last_edited_by(add_form, request)
@@ -118,7 +140,7 @@ def add(request):
     else:
       print(add_form.errors)
   else:
-    add_form = forms.NewTaskForm(initial={'status' : get_status_id('To-Do')})
+    add_form = forms.NewTaskForm()
 
   context = {'form': add_form,
              'title': 'Add'}
@@ -129,19 +151,20 @@ def add(request):
 def detail(request, task_id):
   task = get_object_or_404(models.Task, pk=task_id)
 
+  work_log = models.WorkLog.objects.filter(task=task_id)\
+    .order_by('complete_date')
+
   next_tks = models.Task.objects.filter(id__gt=task.id).order_by('id')[0:1]
-  previous_tsk = models.Task.objects.filter(id__lt=task.id).order_by('id')[0:1].reverse()
+  previous_tsk = models.Task.objects.filter(id__lt=task.id)\
+                 .order_by('id')[0:1].reverse()
 
   if request.method == 'POST':
     detail_form = forms.TaskForm(request.POST, instance = task)
-    status_name = get_status_name(request.POST.get('status'))
-    if status_name == 'Done':
-      detail_form.fields['start_date'].required = True
-      detail_form.fields['complete_date'].required = True
-      detail_form.fields['assigned_to'].required = True
-    if status_name == 'In progress':
-      detail_form.fields['start_date'].required = True
-      detail_form.fields['assigned_to'].required = True
+    post_recurring = request.POST.get('recurring')
+    post_status = request.POST.get('status')
+    post_deadline = request.POST.get('deadline')
+    set_req_fields(post_status, detail_form)
+    # overdue_check(post_status, post_deadline, detail_form)
     if detail_form.is_valid():
       add_last_edited_by(detail_form, request)
       detail_form.save()
@@ -152,6 +175,7 @@ def detail(request, task_id):
     detail_form = forms.TaskForm(instance = task)
 
   context = {'task': task,
+             'work_log':work_log,
              'form': detail_form,
              'next_tks': next_tks,
              'previous_tsk': previous_tsk,
