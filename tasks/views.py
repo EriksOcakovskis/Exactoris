@@ -14,7 +14,7 @@ from operator import attrgetter
 import datetime
 
 def user_login(request):
-  redirect_to = request.REQUEST.get('next')
+  redirect_to = request.GET.get('next')
   if request.method == 'POST':
     username = request.POST.get('username')
     password = request.POST.get('password')

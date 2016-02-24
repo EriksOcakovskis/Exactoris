@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-from smart_selects.db_fields import ChainedForeignKey
 from lib.site_globals import strfdelta
 from django.db.models.signals import post_init
 import datetime
@@ -54,7 +53,6 @@ class Task(models.Model):
     (daily, 'Daily'),
   )
   typeof_recurrence = models.IntegerField(
-    max_length=2,
     choices=RECURRENCE_CHOICES,
     blank=True,
     null=True
@@ -79,7 +77,6 @@ class Task(models.Model):
     (to_do, 'To-Do'),
   )
   status = models.IntegerField(
-    max_length=2,
     choices=STATUS_CHOICES,
     default=to_do
   )

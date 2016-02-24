@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from tasks import views
 
-urlpatterns = patterns('',
+urlpatterns = [
   # ex: /tasks/
   url(r'^$', views.open, name='open'),
   # ex: /tasks/login/
@@ -20,4 +20,4 @@ urlpatterns = patterns('',
   url(r'^(?P<task_id>\d+)/$', views.detail, name='detail'),
   # ex: /tasks/123/edit/
   url(r'^(?P<task_id>\d+)/edit/$', views.detail, name='edit'),
-)
+]

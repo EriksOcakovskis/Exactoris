@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate
 from tasks import models
-from smart_selects.form_fields import ChainedModelChoiceField
 
 class UserLoginForm(forms.ModelForm):
   password = forms.CharField(widget=forms.PasswordInput())
