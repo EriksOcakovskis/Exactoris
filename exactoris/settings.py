@@ -89,11 +89,6 @@ USE_TZ = True
 # Default login pattern
 LOGIN_URL = 'tasks:login'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
-
-STATIC_URL = '/static/'
-
 STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT')
 
 # Static file path
