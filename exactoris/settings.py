@@ -74,7 +74,7 @@ with open(db_config_file) as f:
   DATABASES = eval(s)
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
+# https://docs.djangoproject.com/en/1.9/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -131,3 +131,6 @@ TEMPLATES = [
     },
   },
 ]
+
+#from exactoris.config.prod import *
+from exactoris.config.dev import *
