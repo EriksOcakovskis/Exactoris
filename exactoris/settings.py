@@ -35,8 +35,8 @@ except NameError:
 
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
 
-if os.environ['DJANGO_ALLOWED_HOSTS'] != None:
-  ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
+
+#ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
 
 # Application definition
 DEFAULT_CONTENT_TYPE = 'text/html'
