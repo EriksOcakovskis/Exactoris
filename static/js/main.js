@@ -73,10 +73,13 @@ function showHideRecurrence(){
 
 //
 var checkbox = document.getElementById('recurring');
-if (checkbox.checked == true) {
+if (checkbox) {
+  if (checkbox.checked == true) {
   var anim_cont = document.getElementById('animation_container');
   anim_cont.style.height = '52.5px'
+  }
 }
+
 
 function JobDoneAutoDate(){
   var checkbox = document.getElementById('job_done');
