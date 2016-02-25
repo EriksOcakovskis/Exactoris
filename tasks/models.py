@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from lib.site_globals import strfdelta
 from django.db.models.signals import post_init
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 import datetime
 import calendar
 
@@ -171,12 +173,23 @@ class Task(models.Model):
         self.recurrence_check(datetime_now)
       else:
         if self.status == self.done:
-          self.append_to_work_log()
+          if self.id:
+            self.append_to_work_log()
           self.status = self.to_do
           deadline_post = self.deadline
           self.recurrence_check(deadline_post)
           self.start_date = None
           self.complete_date = None
+
+  def clean(self, *args, **kwargs):
+    if self.recurring == True:
+      if self.status == self.done:
+        print(self.id)
+        if not self.id:
+          raise ValidationError({'recurring': _(
+              'Please uncheck the recurring task option for the first save'
+            )})
+    return super(Task, self).clean(*args, **kwargs)
 
   def save(self, *args, **kwargs):
     self.recurrence_pre_save()
