@@ -68,12 +68,12 @@ ROOT_URLCONF = '%s.urls' % SITE_NAME
 WSGI_APPLICATION = '%s.wsgi.application' % SITE_NAME
 
 # Database
-if os.path.join(BASE_DIR, '.db'):
-  db_config_file = os.path.join(BASE_DIR, '.db')
-  os.chmod(db_config_file, 0o400)
-  with open(db_config_file) as f:
-    s = f.read().strip()
-    DATABASES = eval(s)
+# if os.path.join(BASE_DIR, '.db'):
+#   db_config_file = os.path.join(BASE_DIR, '.db')
+#   os.chmod(db_config_file, 0o400)
+#   with open(db_config_file) as f:
+#     s = f.read().strip()
+#     DATABASES = eval(s)
 
 
 # Internationalization
