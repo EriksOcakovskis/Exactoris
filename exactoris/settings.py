@@ -139,5 +139,5 @@ TEMPLATES = [
   },
 ]
 
-#from exactoris.config.prod import *
-from exactoris.config import *
+from exactoris.config.prod import *
+#from exactoris.config import *

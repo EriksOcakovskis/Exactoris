@@ -73,6 +73,5 @@ class TaskForm(forms.ModelForm):
                     code='Wrong date/time',))
 
 class NewTaskForm(TaskForm):
-  complete_date = forms.DateTimeField(required=False)
   class Meta(TaskForm.Meta):
     exclude = ('registered', 'last_edited_by', 'author', 'last_edited',)
