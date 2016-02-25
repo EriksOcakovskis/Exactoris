@@ -45,6 +45,7 @@ coverage.xml
 .secret
 .db
 /**/prod.py
+/**/dev.py
 
 # OS generated files #
 ######################

@@ -38,7 +38,6 @@ DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
 ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
 
 # Application definition
-
 DEFAULT_CONTENT_TYPE = 'text/html'
 
 INSTALLED_APPS = (
@@ -60,6 +59,7 @@ MIDDLEWARE_CLASSES = (
   'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  'django.middleware.security.SecurityMiddleware',
 )
 
 ROOT_URLCONF = '%s.urls' % SITE_NAME
@@ -89,12 +89,21 @@ USE_TZ = True
 # Default login pattern
 LOGIN_URL = 'tasks:login'
 
+STATIC_URL = '/static/'
+
 STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT')
 
 # Static file path
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# Sesions
+# Sesions & security
+#SESSION_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
+#CSRF_COOKIE_HTTPONLY = True
+#X_FRAME_OPTIONS = 'DENY'
+#SECURE_CONTENT_TYPE_NOSNIFF = True
+#SECURE_BROWSER_XSS_FILTER = True
+
 SESSION_COOKIE_AGE = 28800 # 8 hours
 
 # Template settings
@@ -121,11 +130,11 @@ TEMPLATES = [
         ))
       ],
       'debug': [
-        True
+        False
       ]
     },
   },
 ]
 
 #from exactoris.config.prod import *
-from exactoris.config.dev import *
+from exactoris.config import *

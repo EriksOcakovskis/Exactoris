@@ -111,17 +111,17 @@ def set_req_fields(status_id, form):
     form.fields['start_date'].required = True
     form.fields['assigned_to'].required = True
 
-def overdue_check(status_id, deadline, form):
-  if status_id == '2': # status 'Overdue'
-    deadline_iso = datetime.datetime.strptime(deadline, '%d.%m.%Y')\
-      .date().isoformat()
-    if deadline_iso >= str(timezone.now())[:10]:
-      form.add_error('status', ValidationError(
-                      _('Status is "Overdue" but "Deadline" is in the future!'),
-                      code='Wrong status',))
-      form.add_error('deadline', ValidationError(
-                      _('Are you sure about the "Deadline"?'),
-                      code='Wrong deadline',))
+# def overdue_check(status_id, deadline, form):
+#   if status_id == '2': # status 'Overdue'
+#     deadline_iso = datetime.datetime.strptime(deadline, '%d.%m.%Y')\
+#       .date().isoformat()
+#     if deadline_iso >= str(timezone.now())[:10]:
+#       form.add_error('status', ValidationError(
+#                       _('Status is "Overdue" but "Deadline" is in the future!'),
+#                       code='Wrong status',))
+#       form.add_error('deadline', ValidationError(
+#                       _('Are you sure about the "Deadline"?'),
+#                       code='Wrong deadline',))
 
 @login_required
 def add(request):
