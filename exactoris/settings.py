@@ -35,7 +35,8 @@ except NameError:
 
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
 
-ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
+if os.environ['DJANGO_ALLOWED_HOSTS']:
+  ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
 
 # Application definition
 DEFAULT_CONTENT_TYPE = 'text/html'
@@ -67,11 +68,13 @@ ROOT_URLCONF = '%s.urls' % SITE_NAME
 WSGI_APPLICATION = '%s.wsgi.application' % SITE_NAME
 
 # Database
-db_config_file = os.path.join(BASE_DIR, '.db')
-os.chmod(db_config_file, 0o400)
-with open(db_config_file) as f:
-  s = f.read().strip()
-  DATABASES = eval(s)
+if os.path.join(BASE_DIR, '.db'):
+  db_config_file = os.path.join(BASE_DIR, '.db')
+  os.chmod(db_config_file, 0o400)
+  with open(db_config_file) as f:
+    s = f.read().strip()
+    DATABASES = eval(s)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
