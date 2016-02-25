@@ -25,20 +25,36 @@ table {
   position: relative;
 }
 
+/* gray */
+.done {
+  background-color: #e0e0e0;
+}
+.done:hover, .done:focus {
+  background-color: #d2cece;
+}
+
+/* green */
+.in-progress{
+  background-color: #8bda1a;
+}
+.in-progress:hover, .in-progress:focus {
+  background-color: #7cce06;
+}
+
+/* yellow - orange */
+.on-hold {
+  background-color: #f9c328;
+}
+.on-hold:hover, .on-hold:focus {
+  background-color: #f2b814;
+}
+
+/* red */
 .overdue {
   background-color: #FF7256;
 }
-
 .overdue:hover, .overdue:focus {
   background-color: #e5684c;
-}
-
-.done {
-  background-color: #98FB98;
-}
-
-.done:hover, .done:focus {
-  background-color: #8fec8f;
 }
 
 .errorlist {

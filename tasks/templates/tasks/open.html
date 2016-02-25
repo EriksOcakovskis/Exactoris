@@ -29,8 +29,12 @@
           </thead>
           <tbody>
             {% for e in open_task_list %}
-              {% if e.deadline < time_now %}
+              {% if e.get_status_display == 'Overdue' %}
                 <tr class="overdue">
+              {% elif e.get_status_display == 'On hold' %}
+                <tr class="on-hold">
+              {% elif e.get_status_display == 'In progress' %}
+                <tr class="in-progress">
               {% else %}
                 <tr class="rowhighlight">
               {% endif %}

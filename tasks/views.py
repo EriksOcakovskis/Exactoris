@@ -56,7 +56,6 @@ def open(request):
       .order_by('registered')
 
   context = {'title': 'Open',
-             'time_now': timezone.now(),
              'open_task_list': open_task_list}
 
   return render(request, 'tasks/open.html', context)

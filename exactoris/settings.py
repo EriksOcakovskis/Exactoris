@@ -33,10 +33,7 @@ except NameError:
     secret_file.close()
     os.chmod(SECRET_FILE, 0o400)
 
-DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
-
-
-#ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
+DEBUG = False
 
 # Application definition
 DEFAULT_CONTENT_TYPE = 'text/html'
@@ -66,15 +63,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = '%s.urls' % SITE_NAME
 
 WSGI_APPLICATION = '%s.wsgi.application' % SITE_NAME
-
-# Database
-# if os.path.join(BASE_DIR, '.db'):
-#   db_config_file = os.path.join(BASE_DIR, '.db')
-#   os.chmod(db_config_file, 0o400)
-#   with open(db_config_file) as f:
-#     s = f.read().strip()
-#     DATABASES = eval(s)
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -139,5 +127,4 @@ TEMPLATES = [
   },
 ]
 
-from exactoris.config.prod import *
-#from exactoris.config import *
+from exactoris.config.local import *

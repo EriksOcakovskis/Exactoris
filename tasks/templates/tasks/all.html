@@ -39,7 +39,13 @@
           </thead>
           <tbody>
             {% for task in task_list %}
-              {% if task.finished == True %}
+              {% if task.get_status_display == 'Overdue' %}
+                <tr class="overdue">
+              {% elif task.get_status_display == 'On hold' %}
+                <tr class="on-hold">
+              {% elif task.get_status_display == 'In progress' %}
+                <tr class="in-progress">
+              {% elif task.get_status_display == 'Done' %}
                 <tr class="done">
               {% else %}
                 <tr class="rowhighlight">
