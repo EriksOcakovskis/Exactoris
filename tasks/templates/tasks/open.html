@@ -31,9 +31,9 @@
             {% for e in open_task_list %}
               {% if e.get_status_display == 'Overdue' %}
                 <tr class="overdue">
-              {% elif e.get_status_display == 'On hold' %}
+              {% elif e.get_status_display == 'On Hold' %}
                 <tr class="on-hold">
-              {% elif e.get_status_display == 'In progress' %}
+              {% elif e.get_status_display == 'In Progress' %}
                 <tr class="in-progress">
               {% else %}
                 <tr class="rowhighlight">

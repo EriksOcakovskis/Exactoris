@@ -42,9 +42,9 @@
             {% for task in task_list %}
               {% if task.get_status_display == 'Overdue' %}
                 <tr class="overdue">
-              {% elif task.get_status_display == 'On hold' %}
+              {% elif task.get_status_display == 'On Hold' %}
                 <tr class="on-hold">
-              {% elif task.get_status_display == 'In progress' %}
+              {% elif task.get_status_display == 'In Progress' %}
                 <tr class="in-progress">
               {% elif task.get_status_display == 'Done' %}
                 <tr class="done">
