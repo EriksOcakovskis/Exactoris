@@ -130,8 +130,12 @@ table {
   display: inline-block;
 
   overflow: hidden;
+  width: 150px;
   min-width: 150px;
   height: 34px;
+
+  -ms-text-overflow:ellipsis;
+  text-overflow:ellipsis;
 
   -webkit-appearance:none;
   -moz-appearance:none;
