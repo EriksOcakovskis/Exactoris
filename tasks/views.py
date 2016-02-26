@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.core.validators import URLValidator
+from django.db.models import Q
 from tasks import models
 from tasks import forms
 from lib.site_globals import get_query
@@ -68,10 +69,24 @@ def all(request):
   if ('q' in request.GET) and request.GET['q'].strip():
     query_string = request.GET['q']
 
-    entry_query = get_query(query_string, \
-      ['summary', 'id', 'assigned_to__user__username',])
+    entry_query = get_query(
+      query_string,
+      [
+        'summary',
+        'id',
+        'assigned_to__user__username',
+        'deadline',
+        'complete_date'
+      ]
+    )
 
-    all_task_list = models.Task.objects.order_by('registered')\
+    status_reverse = dict((v, k) for k, v in models.Task.STATUS_CHOICES)
+    try:
+      status_query=Q(status=status_reverse[query_string.title()])
+      all_task_list = models.Task.objects.order_by('registered')\
+                    .filter(status_query | entry_query)
+    except KeyError:
+      all_task_list = models.Task.objects.order_by('registered')\
                     .filter(entry_query)
   else:
     all_task_list = models.Task.objects.order_by('registered')

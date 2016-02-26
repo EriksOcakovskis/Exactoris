@@ -15,9 +15,9 @@
       </div>
       <form class="col-lg-3 col-md-4 col-sm-6 custom_margin" method="GET" action="">
         <div class="input-group">
-          <input class="form-control" id="searchbar" type="text" value="" name="q" placeholder="Station / Customer / User">
+          <input class="form-control" id="searchbar" type="text" value="" name="q" placeholder="Summary / Status / Assignee / ...">
           <span class="input-group-btn">
-            <button class="btn btn-success" type="submit">Search</button>
+            <button class="btn btn-primary" type="submit">Search</button>
           </span>
           {# <a type="button" class="btn btn-default" href="{% url 'tasks:all' %}">Reset Search</a> #}
         </div>
@@ -35,7 +35,7 @@
               <th>Assignee</th>
               <th>Pre.ID</th>
               <th class="sorttable_ddmm">Deadline</th>
-              <th>Completed</th>
+              <th class="sorttable_ddmm">Completed</th>
             </tr>
           </thead>
           <tbody>

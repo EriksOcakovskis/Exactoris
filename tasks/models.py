@@ -5,6 +5,7 @@ from lib.site_globals import strfdelta
 from django.db.models.signals import post_init
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from django.core.cache import cache
 import datetime
 import calendar
 
@@ -72,9 +73,9 @@ class Task(models.Model):
   done = 4
   to_do = 5
   STATUS_CHOICES = (
-    (in_progress, 'In progress'),
+    (in_progress, 'In Progress'),
     (overdue, 'Overdue'),
-    (on_hold, 'On hold'),
+    (on_hold, 'On Hold'),
     (done, 'Done'),
     (to_do, 'To-Do'),
   )
@@ -117,9 +118,11 @@ class Task(models.Model):
     if self.status != self.done and self.deadline:
       if str(self.deadline) < str(timezone.now())[:10]:
         self.status = self.overdue
+        self.save()
     if self.status == self.overdue:
       if str(self.deadline) >= str(timezone.now())[:10]:
         self.status = self.to_do
+        self.save()
 
   def add_months(self, source_date, months):
     month = source_date.month - 1 + months
@@ -186,6 +189,11 @@ class Task(models.Model):
       if self.status != self.done:
         self.status = self.done
 
+  # def set_todo(self):
+  #   if self.status == self.overdue:
+  #     if str(self.deadline) >= str(timezone.now())[:10]:
+  #       self.status = self.to_do
+
   def clean(self, *args, **kwargs):
     if self.recurring == True:
       if self.status == self.done:
@@ -197,6 +205,7 @@ class Task(models.Model):
     return super(Task, self).clean(*args, **kwargs)
 
   def save(self, *args, **kwargs):
+    # self.set_todo()
     self.check_for_complete_date()
     self.recurrence_pre_save()
     if not self.id:
@@ -223,8 +232,15 @@ class WorkLog(models.Model):
     )
 
 def task_post_init(sender, instance, **kwargs):
-  if instance.pk:
-    instance.check_overdue()
+    ## Playing around with optimization
+    # if cache.get('one_time_a_day') == None
+    #   now = timezone.now()
+    #   midnight = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+    #   seconds_till_midnight = (midnight - now).seconds
+    #   print(seconds_till_midnight)
+    #   print('---PING---')
+      if instance.pk:
+        instance.check_overdue()
 
 post_init.connect(
   task_post_init,
