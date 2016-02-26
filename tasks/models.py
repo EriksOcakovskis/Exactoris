@@ -183,7 +183,8 @@ class Task(models.Model):
 
   def check_for_complete_date(self):
     if self.complete_date:
-      self.status = self.done
+      if self.status != self.done:
+        self.status = self.done
 
   def clean(self, *args, **kwargs):
     if self.recurring == True:
@@ -196,8 +197,8 @@ class Task(models.Model):
     return super(Task, self).clean(*args, **kwargs)
 
   def save(self, *args, **kwargs):
-    self.recurrence_pre_save()
     self.check_for_complete_date()
+    self.recurrence_pre_save()
     if not self.id:
       self.registered = timezone.now()
     self.last_edited = timezone.now()
