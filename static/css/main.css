@@ -147,6 +147,7 @@ table {
   font-weight: normal;
   line-height: 1.42857;
   text-align: center;
+  text-align-last:center;
   white-space: nowrap;
   vertical-align: middle;
   cursor: pointer;
