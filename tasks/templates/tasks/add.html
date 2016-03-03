@@ -74,6 +74,37 @@
       </div>
     {# Row priority End #}
 
+    {# Row category #}
+      <div class="row custom_margin">
+        <div class="col-lg-4 col-md-5 col-sm-6">
+        {% if form.category.errors %}
+          <div class="input-group">
+            <div class="custom_form_label left">
+              {{ form.category.label_tag }}
+            </div>
+            <div class="custom_select_wraper">
+              {% render_field form.category class+="custom_select custom_select_dropdown has-warning" %}
+            </div>
+          </div>
+          {% for error in form.category.errors %}
+            <span id="helpBlock" class="help-block">
+              {{ error|escape }}
+            </span>
+          {% endfor %}
+        {% else %}
+          <div class="input-group">
+            <div class="custom_form_label left">
+              {{ form.category.label_tag }}
+            </div>
+            <div class="custom_select_wraper">
+              {% render_field form.category class+="custom_select custom_select_dropdown" %}
+            </div>
+          </div>
+        {% endif %}
+        </div>
+      </div>
+    {# Row category End #}
+
     {# Row status #}
       <div class="row custom_margin">
         <div class="col-lg-4 col-md-5 col-sm-6">

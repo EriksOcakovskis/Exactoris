@@ -40,6 +40,7 @@ class TaskForm(forms.ModelForm):
     fields = ('id',
               'summary',
               'priority',
+              'category',
               'status',
               'assigned_to',
               'recurring',

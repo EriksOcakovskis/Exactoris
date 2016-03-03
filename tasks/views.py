@@ -74,6 +74,7 @@ def all(request):
       [
         'summary',
         'id',
+        'category__name',
         'assigned_to__user__username',
         'deadline',
         'complete_date'

@@ -22,6 +22,7 @@
               <th>Summary</th>
               <th>Status</th>
               <th>Priority</th>
+              <th>Category</th>
               <th>Assignee</th>
               <th>Pre.ID</th>
               <th class="sorttable_ddmm">Deadline</th>
@@ -42,6 +43,7 @@
                 <td>{{ e.summary }}</td>
                 <td>{{ e.get_status_display }}</td>
                 <td>{{ e.priority }}</td>
+                <td>{{ e.category }}</td>
                 <td>{{ e.assigned_to }}</td>
                 <td>{{ e.prerequisite.id }}</td>
                 <td>{{ e.deadline|date:"d.m.Y" }}</td>

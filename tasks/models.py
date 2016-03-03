@@ -31,6 +31,15 @@ class Priority(models.Model):
   def __str__(self):
     return self.name
 
+class Category(models.Model):
+  name = models.CharField(max_length=50)
+  created_date = models.DateTimeField(auto_now_add=True, blank=False)
+  mod_date = models.DateTimeField(auto_now=True, blank=False)
+  last_edited_by = models.CharField(max_length=50, blank=False, null=True)
+
+  def __str__(self):
+    return self.name
+
 class Task(models.Model):
   # Task summary, never empty
   summary = models.CharField(blank=False, max_length=80)
@@ -66,6 +75,8 @@ class Task(models.Model):
   start_date = models.DateTimeField(blank=True, null=True)
   # Priority of the task
   priority = models.ForeignKey(Priority)
+
+  category = models.ForeignKey(Category, blank=True, null=True)
   # Status of the task
   in_progress = 1
   overdue = 2
