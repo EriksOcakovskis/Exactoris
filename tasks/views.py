@@ -107,7 +107,11 @@ def add_author(form_data, request):
 
 def add_last_edited_by(form_data, request):
   updated_form = form_data.save(commit=False)
-  updated_form.last_edited_by = request.user.username
+  if request.user.first_name or request.user.last_name:
+    updated_form.last_edited_by = \
+      request.user.first_name + ' ' + request.user.last_name
+  else:
+    updated_form.last_edited_by = request.user.username
 
 def get_status_id(status_name):
   s = models.Status.objects.get(name=status_name)
