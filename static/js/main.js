@@ -22,6 +22,38 @@ function overflowHack() {
   }
 }
 
+// Send sorting column to server
+document.addEventListener("DOMContentLoaded", function(event) {
+  if (document.getElementById('send_sorting') != null) {
+    sorting_tr = document.getElementById('send_sorting');
+    //sorting_tr.addEventListener("click", remeberSorting, false);
+    for (var i = 0; i < sorting_tr.children.length; i++) {
+      sorting_tr.children[i].addEventListener("click", remeberSorting, false);
+    }
+  }
+});
+
+function remeberSorting(evt) {
+  var httpRequest;
+  var csrftoken = Cookies.get('csrftoken');
+  httpRequest = new XMLHttpRequest();
+
+  if (!httpRequest) {
+    console.log('Giving up :( Cannot create an XMLHTTP instance');
+    return false;
+  }
+
+  httpRequest.open('POST', '/tasks/save_to_session/');
+  httpRequest.setRequestHeader("X-CSRFToken", csrftoken);
+  httpRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  if (evt.currentTarget.parentNode.className.match(/\bopen\b/)) {
+    httpRequest.send('sort_by_for_open=' + evt.currentTarget.id + '&' + 'order_for_open=' + evt.currentTarget.className);
+  } else {
+    httpRequest.send('sort_by=' + evt.currentTarget.id + '&' + 'order=' + evt.currentTarget.className);
+  }
+}
+
 // Animator
 function animate(options) {
 
@@ -44,7 +76,7 @@ function animate(options) {
   }, options.delay || 10)
 }
 
-// Anumation properties for height change
+// Animation properties for height change
 function changeHeight(element, delta, duration) {
   var to = 52.5;
 
@@ -104,12 +136,6 @@ function JobDoneAutoDate(){
   };
 };
 
-// userMenu.onchange=function(){ //run some code when "onchange" event fires
-//  var chosenoption=this.options[this.selectedIndex] //this refers to "selectmenu"
-//  if (chosenoption.value!="nothing"){
-//   jobStartDate.value = newDate.toString();
-//  }
-// }
 
 // Copyright 2014-2015 Twitter, Inc.
 // Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)

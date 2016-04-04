@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseNotAllowed
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -12,6 +13,7 @@ from tasks import models
 from tasks import forms
 from lib.site_globals import get_query
 from operator import attrgetter
+from itertools import chain
 import datetime
 
 def user_login(request):
@@ -45,19 +47,75 @@ def user_logout(request):
   return HttpResponseRedirect(reverse('tasks:login'))
 
 @login_required
+def save_to_session(request):
+  if not request.is_ajax() or not request.method=='POST':
+    return HttpResponseNotAllowed(['POST'])
+
+  if request.POST.get('sort_by'):
+    order = request.POST.get('order')
+    if order[-7:] == 'reverse':
+      sort_by = '-' + request.POST.get('sort_by')
+    else:
+      sort_by = request.POST.get('sort_by')
+    request.session['sort_by'] = sort_by
+
+  if request.POST.get('sort_by_for_open'):
+    order_for_open = request.POST.get('order_for_open')
+    if order_for_open[-7:] == 'reverse':
+      sort_by_for_open = '-' + request.POST.get('sort_by_for_open')
+    else:
+      sort_by_for_open = request.POST.get('sort_by_for_open')
+    request.session['sort_by_for_open'] = sort_by_for_open
+
+  return HttpResponse('ok')
+
+def sort_by_logic(sort_value, model_object):
+  if sort_value == 'status' or sort_value == '-status':
+    q1 = model_object.filter(status=4)
+    q2 = model_object.filter(status=1)
+    q3 = model_object.filter(status=3)
+    q4 = model_object.filter(status=2)
+    q5 = model_object.filter(status=5)
+    if sort_value == '-status':
+      sorting_result = chain(q5, q4, q3, q2, q1)
+    else:
+      sorting_result = chain(q1, q2, q3, q4, q5)
+  elif sort_value == 'category' or sort_value == '-category':
+    sorting_result = model_object.order_by(sort_value+'__name')
+  elif sort_value == 'assigned_to' or sort_value == '-assigned_to':
+    sorting_result = model_object.order_by(sort_value+'__user__first_name')
+  else:
+    sorting_result = model_object.order_by(sort_value)
+  return sorting_result
+
+def sort_by_for_open(request, model_object):
+  if 'sort_by_for_open' in request.session:
+    sort_value = request.session['sort_by_for_open']
+    query_result = sort_by_logic(sort_value, model_object)
+  else:
+    query_result = model_object.order_by('registered')
+  return query_result
+
+def sort_by_for_all(request, model_object):
+  if 'sort_by' in request.session:
+    sort_value = request.session['sort_by']
+    query_result = sort_by_logic(sort_value, model_object)
+  else:
+    query_result = model_object.order_by('registered')
+  return query_result
+
+@login_required
 def open(request):
   if ('q' in request.GET) and request.GET['q'].strip():
-    open_task_list = models.Task.objects\
-      .assigned_to(request.user.username)\
-      .exclude(status=4)\
-      .order_by('registered')
+    open_task_list = sort_by_for_open(request, models.Task.objects.assigned_to(request.user.username).exclude(status=4))
   else:
-    open_task_list = models.Task.objects\
-      .exclude(status=4)\
-      .order_by('registered')
+    open_task_list = sort_by_for_open(request, models.Task.objects.exclude(status=4))
 
   context = {'title': 'Open',
              'open_task_list': open_task_list}
+
+  if 'sort_by_for_open' in request.session:
+    context['sort_arrow_parent_id'] = request.session['sort_by_for_open']
 
   return render(request, 'tasks/open.html', context)
 
@@ -66,34 +124,44 @@ def all(request):
   query_string = ''
   found_entries = None
 
-  if ('q' in request.GET) and request.GET['q'].strip():
-    query_string = request.GET['q']
+  if 'search_field' in request.session or \
+  (('q' in request.GET) and request.GET['q'].strip()):
+    if ('q' in request.GET):
+      query_string = request.GET['q']
+    else:
+      query_string = request.session['search_field']
 
-    entry_query = get_query(
-      query_string,
-      [
-        'summary',
-        'id',
-        'category__name',
-        'assigned_to__user__username',
-        'deadline',
-        'complete_date'
-      ]
-    )
-
-    status_reverse = dict((v, k) for k, v in models.Task.STATUS_CHOICES)
-    try:
-      status_query=Q(status=status_reverse[query_string.title()])
-      all_task_list = models.Task.objects.order_by('registered')\
-                    .filter(status_query | entry_query)
-    except KeyError:
-      all_task_list = models.Task.objects.order_by('registered')\
-                    .filter(entry_query)
+    if query_string == '':
+      all_task_list = sort_by_for_all(request, models.Task.objects)
+    else:
+      entry_query = get_query(
+        query_string,
+        [
+          'summary',
+          'id',
+          'category__name',
+          'assigned_to__user__first_name',
+          'assigned_to__user__last_name',
+          'deadline',
+          'complete_date'
+        ]
+      )
+      status_reverse = dict((v, k) for k, v in models.Task.STATUS_CHOICES)
+      try:
+        status_query=Q(status=status_reverse[query_string.title()])
+        all_task_list = sort_by_for_all(request, models.Task.objects.filter(status_query | entry_query))
+      except KeyError:
+        all_task_list = sort_by_for_all(request, models.Task.objects.filter(entry_query))
+    request.session['search_field'] = query_string
   else:
-    all_task_list = models.Task.objects.order_by('registered')
+    all_task_list = sort_by_for_all(request, models.Task.objects)
 
   context = {'title': 'All',
-             'task_list': all_task_list}
+             'task_list': all_task_list,
+             'search_field': query_string}
+
+  if 'sort_by' in request.session:
+    context['sort_arrow_parent_id'] = request.session['sort_by']
 
   return render(request, 'tasks/all.html', context)
 

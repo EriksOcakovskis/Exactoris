@@ -90,8 +90,9 @@ class Task(models.Model):
     (done, 'Done'),
     (to_do, 'To-Do'),
   )
+  sorted_status = sorted(STATUS_CHOICES, key=lambda x: x[1])
   status = models.IntegerField(
-    choices=STATUS_CHOICES,
+    choices=sorted_status,
     default=to_do
   )
   # Date and time when the task was complete

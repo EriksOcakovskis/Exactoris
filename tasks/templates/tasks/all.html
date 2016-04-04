@@ -6,16 +6,18 @@
   <div class="page-header">
     <h1>All tasks</h1>
   </div>
-
-  {% if task_list %}
     <div class="row">
       <div class="col-lg-3 col-md-4 col-sm-6 custom_margin">
         <a type="button" class="btn btn-primary" href="?q={{ user.username }}">Show assigned to me</a>
-        <a type="button" class="btn btn-default" href="{% url 'tasks:all' %}">Show all</a>
+        <a type="button" class="btn btn-default" href="?q=">Show all</a>
       </div>
       <form class="col-lg-3 col-md-4 col-sm-6 custom_margin" method="GET" action="">
         <div class="input-group">
-          <input class="form-control" id="searchbar" type="text" value="" name="q" placeholder="Summary / Status / Assignee / ...">
+          {% if search_field == ''%}
+            <input class="form-control" id="searchbar" type="text" value='' name="q" placeholder="Summary / Status / Assignee / ...">
+          {% else %}
+            <input class="form-control" id="searchbar" type="text" value='' name="q" placeholder={{ search_field }}>
+          {% endif %}
           <span class="input-group-btn">
             <button class="btn btn-primary" type="submit">Search</button>
           </span>
@@ -23,20 +25,83 @@
         </div>
       </form>
     </div>
+  {% if task_list %}
     <div class="row">
       <div class="col-lg-6 col-md-8">
         <table class="table sortable">
           <thead>
-            <tr class="sorttable-cursor">
-              <th>ID</th>
-              <th>Summary</th>
-              <th>Status</th>
-              <th>Priority</th>
-              <th>Category</th>
-              <th>Assignee</th>
-              <th>Pre.ID</th>
-              <th class="sorttable_ddmm">Deadline</th>
-              <th class="sorttable_ddmm">Completed</th>
+            <tr id="send_sorting" class="sorttable-cursor">
+              {% if sort_arrow_parent_id == 'id' %}
+                <th id="id">ID<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-id' %}
+                <th id="id">ID<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="id">ID</th>
+              {% endif %}
+
+              {% if sort_arrow_parent_id == 'summary' %}
+                <th id="summary">Summary<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-summary' %}
+                <th id="summary">Summary<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="summary">Summary</th>
+              {% endif %}
+
+              {% if sort_arrow_parent_id == 'status' %}
+                <th id="status">Status<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-status' %}
+                <th id="status">Status<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="status">Status</th>
+              {% endif %}
+
+              {% if sort_arrow_parent_id == 'priority' %}
+                <th id="priority">Priority<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-priority' %}
+                <th id="priority">Priority<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="priority">Priority</th>
+              {% endif %}
+
+              {% if sort_arrow_parent_id == 'category' %}
+                <th id="category">Category<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-category' %}
+                <th id="category">Category<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="category">Category</th>
+              {% endif %}
+
+              {% if sort_arrow_parent_id == 'assigned_to' %}
+                <th id="assigned_to">Assignee<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-assigned_to' %}
+                <th id="assigned_to">Assignee<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="assigned_to">Assignee</th>
+              {% endif %}
+
+              {% if sort_arrow_parent_id == 'prerequisite' %}
+                <th id="prerequisite">Pre.ID<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-prerequisite' %}
+                <th id="prerequisite">Pre.ID<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="prerequisite">Pre.ID</th>
+              {% endif %}
+
+              {% if sort_arrow_parent_id == 'deadline' %}
+                <th id="deadline" class="sorttable_ddmm">Deadline<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-deadline' %}
+                <th id="deadline" class="sorttable_ddmm">Deadline<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="deadline" class="sorttable_ddmm">Deadline</th>
+              {% endif %}
+
+              {% if sort_arrow_parent_id == 'complete_date' %}
+                <th id="complete_date" class="sorttable_ddmm">Completed<span id="sorttable_sortfwdind">&nbsp;▾</span></th>
+              {% elif sort_arrow_parent_id == '-complete_date' %}
+                <th id="complete_date" class="sorttable_ddmm">Completed<span id="sorttable_sortrevind">&nbsp;▴</span></th>
+              {% else %}
+                <th id="complete_date" class="sorttable_ddmm">Completed</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -56,8 +121,8 @@
                 <td>{{ task.summary }}</td>
                 <td>{{ task.get_status_display }}</td>
                 <td>{{ task.priority }}</td>
-                <td>{{ task.category }}</td>
-                <td>{{ task.assigned_to }}</td>
+                <td>{{ task.category.name }}</td>
+                <td>{{ task.assigned_to.user.first_name }} {{task.assigned_to.user.last_name}}</td>
                 <td>{{ task.prerequisite.id }}</td>
                 <td>{{ task.deadline|date:"d.m.Y" }}</td>
                 <td>{{ task.complete_date|date:"d.m.Y" }}</td>
