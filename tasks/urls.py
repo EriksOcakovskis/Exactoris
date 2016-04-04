@@ -20,4 +20,6 @@ urlpatterns = [
   url(r'^(?P<task_id>\d+)/$', views.detail, name='detail'),
   # ex: /tasks/123/edit/
   url(r'^(?P<task_id>\d+)/edit/$', views.detail, name='edit'),
+  # Url for session variable posting
+  url(r'^save_to_session/', views.save_to_session, name='save_to_session'),
 ]
