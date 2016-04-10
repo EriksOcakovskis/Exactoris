@@ -1,9 +1,13 @@
+Tasks
+<br>
 Id;
-Iummary;
+Summary;
 Priority;
 Status;
 Registered;
 Assigned to;
+Recurring;
+Typeof recurrence;
 Deadline;
 Start date;
 Complete date;
@@ -13,7 +17,7 @@ Prerequisite description;
 Author;
 Last edited;
 Last edited by;
-Commentary;
+Commentary
 <br>
 {% for task in all_tasks %}
   {{ task.id }};
@@ -22,6 +26,8 @@ Commentary;
   {{ task.status }};
   {{ task.registered|date:"Y-m-d H:i:s" }};
   {{ task.assigned_to }};
+  {{ task.recurring }}
+  {{ task.typeof_recurrence }}
   {{ task.deadline|date:"Y-m-d H:i:s" }};
   {{ task.start_date|date:"Y-m-d H:i:s" }};
   {{ task.complete_date|date:"Y-m-d H:i:s" }};
@@ -31,6 +37,24 @@ Commentary;
   {{ task.author }};
   {{ task.last_edited|date:"Y-m-d H:i:s" }};
   {{ task.last_edited_by }};
-  {{ task.commentary }};
+  {{ task.commentary }}
+  <br>
+{% endfor %}
+<br>
+<br>
+Work log
+<br>
+task id;
+Start date;
+complete date;
+assigned to;
+notes
+<br>
+{% for entry in work_log %}
+  {{ entry.task}};
+  {{ entry.start_date}};
+  {{ entry.complete_date}};
+  {{ entry.assigned_to}};
+  {{ entry.notes}}
   <br>
 {% endfor %}

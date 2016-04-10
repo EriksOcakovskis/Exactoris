@@ -272,5 +272,7 @@ def detail(request, task_id):
 @login_required
 def reports(request):
   all_task_list = models.Task.objects.order_by('-registered')
-  context = {'all_tasks': all_task_list}
+  work_log = models.WorkLog.objects.order_by('-start_date')
+  context = {'all_tasks': all_task_list,
+             'work_log': work_log}
   return render(request, 'tasks/reports.html', context)
