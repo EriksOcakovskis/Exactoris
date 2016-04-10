@@ -45,15 +45,17 @@ Commentary
 Work log
 <br>
 task id;
+task summary;
 Start date;
 complete date;
 assigned to;
 notes
 <br>
 {% for entry in work_log %}
-  {{ entry.task}};
-  {{ entry.start_date}};
-  {{ entry.complete_date}};
+  {{ entry.task.id}};
+  {{ entry.task.summary }};
+  {{ entry.start_date|date:"Y-m-d H:i:s"}};
+  {{ entry.complete_date|date:"Y-m-d H:i:s"}};
   {{ entry.assigned_to}};
   {{ entry.notes}}
   <br>
