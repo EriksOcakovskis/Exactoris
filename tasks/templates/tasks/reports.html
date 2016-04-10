@@ -23,11 +23,11 @@ Commentary
   {{ task.id }};
   {{ task.summary }};
   {{ task.priority }};
-  {{ task.status }};
+  {{ task.get_status_display }};
   {{ task.registered|date:"Y-m-d H:i:s" }};
   {{ task.assigned_to }};
   {{ task.recurring }};
-  {{ task.typeof_recurrence }};
+  {{ task.get_typeof_recurrence_display }};
   {{ task.deadline|date:"Y-m-d H:i:s" }};
   {{ task.start_date|date:"Y-m-d H:i:s" }};
   {{ task.complete_date|date:"Y-m-d H:i:s" }};
