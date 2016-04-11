@@ -3,6 +3,7 @@ Tasks
 Id;
 Summary;
 Priority;
+Category;
 Status;
 Registered;
 Assigned to;
@@ -23,6 +24,7 @@ Commentary
   {{ task.id }};
   {{ task.summary }};
   {{ task.priority }};
+  {{ task.category }};
   {{ task.get_status_display }};
   {{ task.registered|date:"Y-m-d H:i:s" }};
   {{ task.assigned_to }};
